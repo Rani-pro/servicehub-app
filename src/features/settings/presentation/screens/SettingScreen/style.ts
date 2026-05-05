@@ -1,0 +1,151 @@
+import { StyleSheet } from 'react-native';
+
+export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.secondaryBackground,
+    },
+    
+    menuButton: {
+        padding: Spacing.xs,
+        marginRight: Spacing.m,
+        borderRadius: 20,
+        backgroundColor: Colors.secondaryBackground,
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: Colors.text,
+    },
+    content: {
+        paddingBottom: Spacing.xl,
+    },
+    profileCard: {
+        backgroundColor: Colors.white,
+        margin: Spacing.m,
+        padding: Spacing.l,
+        borderRadius: 20,
+        alignItems: 'center',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+    },
+    avatarWrapper: {
+        position: 'relative',
+        marginBottom: Spacing.m,
+    },
+    avatarContainer: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        backgroundColor: Colors.primary + '15', // 15% opacity
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: Colors.primary,
+        overflow: 'hidden',
+    },
+    avatarImage: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+    },
+    cameraBadge: {
+        position: 'absolute',
+        bottom: 2,
+        right: 2,
+        width: 26,
+        height: 26,
+        borderRadius: 13,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#fff',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.18,
+        shadowRadius: 3,
+    },
+    uploadHintBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 6,
+        paddingHorizontal: 12,
+        paddingVertical: 5,
+        borderRadius: 20,
+        backgroundColor: Colors.primary + '15',
+        gap: 5,
+    },
+    uploadHintText: {
+        fontSize: 12,
+        fontWeight: '600',
+        marginLeft: 4,
+    },
+    userName: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: Colors.text,
+    },
+    userEmail: {
+        fontSize: 14,
+        color: Colors.textSecondary,
+        marginTop: Spacing.xs,
+    },
+    section: {
+        backgroundColor: Colors.white,
+        marginTop: Spacing.m,
+        paddingHorizontal: Spacing.m,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: Colors.border,
+    },
+    sectionTitle: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: Colors.textSecondary,
+        marginHorizontal: Spacing.m,
+        marginTop: Spacing.l,
+        marginBottom: Spacing.s,
+        textTransform: 'uppercase',
+        letterSpacing: 1.2,
+    },
+    settingItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: Spacing.m,
+        borderBottomWidth: 1,
+        borderBottomColor: Colors.border,
+    },
+    settingItemLast: {
+        borderBottomWidth: 0,
+    },
+    settingIconContainer: {
+        width: 40,
+        height: 40,
+        borderRadius: 12,
+        backgroundColor: Colors.secondaryBackground,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: Spacing.m,
+    },
+    settingTextContainer: {
+        flex: 1,
+    },
+    settingLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: Colors.text,
+    },
+    settingDescription: {
+        fontSize: 12,
+        color: Colors.textSecondary,
+        marginTop: 2,
+    },
+    logoutButton: {
+        margin: Spacing.xl,
+    },
+});
+

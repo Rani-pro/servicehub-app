@@ -1,6 +1,10 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: "com.google.gms.google-services"
+apply plugin: "com.google.firebase.crashlytics"
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -21,7 +25,7 @@ react {
     //   The list of variants to that are debuggable. For those we're going to
     //   skip the bundling of the JS bundle and the assets. Default is "debug", "debugOptimized".
     //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
-    // debuggableVariants = ["liteDebug", "liteDebugOptimized", "prodDebug", "prodDebugOptimized"]
+    debuggableVariants = ["stagingDebug", "productionDebug"]
 
     /* Bundling */
     //   A list containing the node command and its flags. Default is just 'node'.
@@ -85,6 +89,27 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    flavorDimensions "environment"
+    productFlavors {
+        staging {
+            dimension "environment"
+            applicationId "com.servicehub.staging"
+            versionNameSuffix "-staging"
+            resValue "string", "app_name", "SERVICEHUB Staging"
+            buildConfigField "String", "ENVIRONMENT", '"staging"'
+            buildConfigField "boolean", "IS_PRODUCTION", "false"
+            buildConfigField "String", "API_BASE_URL", '"https://api-staging.servicehub.com"'
+        }
+        production {
+            dimension "environment"
+            applicationId "com.servicehub"
+            resValue "string", "app_name", "SERVICEHUB"
+            buildConfigField "String", "ENVIRONMENT", '"production"'
+            buildConfigField "boolean", "IS_PRODUCTION", "true"
+            buildConfigField "String", "API_BASE_URL", '"https://api.servicehub.com"'
+        }
+    }
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -110,6 +135,13 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    
+    // Add Firebase Crashlytics and Analytics dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
