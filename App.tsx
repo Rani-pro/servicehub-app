@@ -12,6 +12,8 @@ import { LightColors, DarkColors } from './src/shared/theme/theme';
 
 // Import Crashlytics test utilities for development
 import './src/utils/CrashlyticsTestUtils';
+// Import DevTools helpers (network logging, RN DevTools setup)
+import './src/utils/devTools';
 // ─── Global JS Error Handler ───────────────────────────────────────────────
 // Catches unhandled Promise rejections and uncaught JS errors, records them as
 // non-fatal events in Crashlytics so they appear in the Firebase console.

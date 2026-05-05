@@ -70,4 +70,7 @@ export const {
   clearAllNotifications,
 } = notificationSlice.actions;
 
+// Re-export types for convenience
+export type { Notification } from '../types';
+
 export default notificationSlice.reducer;

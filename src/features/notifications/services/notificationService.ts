@@ -1,9 +1,9 @@
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import { AppDispatch } from '../../../store/store';
 import { addNotification } from '../store/notificationSlice';
-import { Notification, FCMMessage } from '../types';
+import { Notification } from '../types';
 import { Platform, Alert } from 'react-native';
-import { navigationRef } from '../../../navigation/navigationRef';
+import { navigationRef, navigate } from '../../../navigation/navigationRef';
 
 class NotificationService {
   private dispatch: AppDispatch | null = null;
@@ -120,7 +120,7 @@ class NotificationService {
   private handleNotificationPress(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
     const { data } = remoteMessage;
     
-    if (!navigationRef.current) {
+    if (!navigationRef.isReady()) {
       console.warn('Navigation ref not available');
       return;
     }
@@ -129,22 +129,18 @@ class NotificationService {
     if (data?.screen) {
       switch (data.screen) {
         case 'Notifications':
-          navigationRef.current.navigate('Notifications' as never);
+          navigate('Notifications');
           break;
         case 'ServiceDetail':
           if (data.serviceId) {
-            navigationRef.current.navigate('ServiceDetail' as never, { 
-              serviceId: data.serviceId 
-            } as never);
+            navigate('ServiceDetail', { serviceId: data.serviceId });
           }
           break;
         default:
-          // Navigate to notifications screen by default
-          navigationRef.current.navigate('Notifications' as never);
+          navigate('Notifications');
       }
     } else {
-      // Default navigation to notifications screen
-      navigationRef.current.navigate('Notifications' as never);
+      navigate('Notifications');
     }
   }
 

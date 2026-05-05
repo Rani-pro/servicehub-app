@@ -101,7 +101,14 @@ const NotificationScreen = () => {
   };
 
   const renderNotification = ({ item }: { item: Notification }) => (
-    <Card padding="medium" shadow="small" style={[styles.notificationCard, !item.read && styles.unreadCard]}>
+    <Card 
+      padding="medium" 
+      shadow="small" 
+      style={!item.read ? 
+        [styles.notificationCard, styles.unreadCard] as any : 
+        styles.notificationCard
+      }
+    >
       <TouchableOpacity
         onPress={() => handleNotificationPress(item)}
         style={styles.notificationContent}
@@ -118,7 +125,10 @@ const NotificationScreen = () => {
           <View style={styles.notificationInfo}>
             <ResponsiveText
               variant={isSmallDevice ? "body" : "h4"}
-              style={[styles.notificationTitle, !item.read && styles.unreadTitle]}
+              style={!item.read ? 
+                [styles.notificationTitle, styles.unreadTitle] as any : 
+                styles.notificationTitle
+              }
               numberOfLines={2}
             >
               {item.title}

@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { Colors } from '../../../../../shared/theme/theme';
 
-export const getStyles = (colors: Colors) =>
+export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -24,7 +23,7 @@ export const getStyles = (colors: Colors) =>
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderRadius: 8,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.secondaryBackground,
     },
     disabledButton: {
       opacity: 0.5,
@@ -37,11 +36,11 @@ export const getStyles = (colors: Colors) =>
       color: colors.textSecondary,
     },
     clearButtonText: {
-      color: colors.error,
+      color: colors.danger,
       fontWeight: '600',
     },
     notificationItem: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.secondaryBackground,
       borderRadius: 12,
       marginBottom: 12,
       padding: 16,

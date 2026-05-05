@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   FlatList,
@@ -6,6 +6,7 @@ import {
   Text,
   Alert,
   RefreshControl,
+  StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppSelector, useAppDispatch } from '../../../../../shared/hooks/reduxHooks';
@@ -98,9 +99,9 @@ const NotificationsScreen: React.FC = () => {
       case 'success':
         return colors.success;
       case 'warning':
-        return colors.warning;
+        return colors.danger;
       case 'error':
-        return colors.error;
+        return colors.danger;
       default:
         return colors.primary;
     }
@@ -133,11 +134,11 @@ const NotificationsScreen: React.FC = () => {
         </View>
         
         <ResponsiveText
-          variant="bodyMedium"
-          style={[
+          variant="body"
+          style={StyleSheet.flatten([
             styles.notificationTitle,
             !item.read && styles.unreadText,
-          ]}
+          ])}
         >
           {item.title}
         </ResponsiveText>
@@ -160,7 +161,7 @@ const NotificationsScreen: React.FC = () => {
       <ResponsiveText variant="h4" style={styles.emptyTitle}>
         No Notifications
       </ResponsiveText>
-      <ResponsiveText variant="bodyMedium" style={styles.emptyMessage}>
+      <ResponsiveText variant="body" style={styles.emptyMessage}>
         You're all caught up! New notifications will appear here.
       </ResponsiveText>
     </View>
@@ -180,11 +181,11 @@ const NotificationsScreen: React.FC = () => {
           ]}
         >
           <ResponsiveText
-            variant="bodyMedium"
-            style={[
+            variant="body"
+            style={StyleSheet.flatten([
               styles.actionButtonText,
               unreadCount === 0 && styles.disabledText,
-            ]}
+            ])}
           >
             Mark All Read
           </ResponsiveText>
@@ -194,7 +195,7 @@ const NotificationsScreen: React.FC = () => {
           onPress={handleClearAll}
           style={styles.actionButton}
         >
-          <ResponsiveText variant="bodyMedium" style={styles.clearButtonText}>
+          <ResponsiveText variant="body" style={styles.clearButtonText}>
             Clear All
           </ResponsiveText>
         </TouchableOpacity>
