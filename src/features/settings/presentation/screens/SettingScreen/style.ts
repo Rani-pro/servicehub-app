@@ -1,56 +1,43 @@
 import { StyleSheet } from 'react-native';
+import { ComponentSizes, Shadows } from '../../../../../shared/theme/theme';
+import { responsiveScale } from '../../../../../shared/utils/responsive';
 
-export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
+export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.secondaryBackground,
-    },
-    
-    menuButton: {
-        padding: Spacing.xs,
-        marginRight: Spacing.m,
-        borderRadius: 20,
-        backgroundColor: Colors.secondaryBackground,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: Colors.text,
+        backgroundColor: colors.background,
     },
     content: {
-        paddingBottom: Spacing.xl,
+        flex: 1,
+        padding: Spacing.m,
     },
     profileCard: {
-        backgroundColor: Colors.white,
-        margin: Spacing.m,
+        backgroundColor: colors.secondaryBackground,
+        borderRadius: ComponentSizes.card.borderRadius,
         padding: Spacing.l,
-        borderRadius: 20,
         alignItems: 'center',
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
+        marginBottom: Spacing.l,
+        ...Shadows.medium,
     },
     avatarWrapper: {
         position: 'relative',
         marginBottom: Spacing.m,
     },
-    avatarContainer: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
-        backgroundColor: Colors.primary + '15', // 15% opacity
-        justifyContent: 'center',
+    avatar: {
+        width: responsiveScale(80),
+        height: responsiveScale(80),
+        borderRadius: responsiveScale(40),
+        backgroundColor: colors.primary + '20',
         alignItems: 'center',
+        justifyContent: 'center',
         borderWidth: 2,
-        borderColor: Colors.primary,
+        borderColor: colors.primary,
         overflow: 'hidden',
     },
     avatarImage: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
+        width: responsiveScale(80),
+        height: responsiveScale(80),
+        borderRadius: responsiveScale(40),
     },
     cameraBadge: {
         position: 'absolute',
@@ -62,90 +49,66 @@ export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
-        borderColor: '#fff',
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.18,
-        shadowRadius: 3,
-    },
-    uploadHintBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 6,
-        paddingHorizontal: 12,
-        paddingVertical: 5,
-        borderRadius: 20,
-        backgroundColor: Colors.primary + '15',
-        gap: 5,
-    },
-    uploadHintText: {
-        fontSize: 12,
-        fontWeight: '600',
-        marginLeft: 4,
+        borderColor: colors.background,
+        ...Shadows.small,
     },
     userName: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: Colors.text,
+        fontSize: responsiveScale(24),
+        fontWeight: '600',
+        color: colors.text,
+        marginBottom: Spacing.xs,
+        textAlign: 'center',
     },
     userEmail: {
-        fontSize: 14,
-        color: Colors.textSecondary,
-        marginTop: Spacing.xs,
+        fontSize: responsiveScale(16),
+        color: colors.textSecondary,
+        textAlign: 'center',
     },
-    section: {
-        backgroundColor: Colors.white,
-        marginTop: Spacing.m,
-        paddingHorizontal: Spacing.m,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: Colors.border,
+    menuSection: {
+        marginTop: Spacing.s,
+        marginBottom: Spacing.s,
     },
     sectionTitle: {
-        fontSize: 14,
-        fontWeight: '700',
-        color: Colors.textSecondary,
-        marginHorizontal: Spacing.m,
-        marginTop: Spacing.l,
-        marginBottom: Spacing.s,
-        textTransform: 'uppercase',
-        letterSpacing: 1.2,
+        fontSize: responsiveScale(18),
+        fontWeight: '600',
+        color: colors.text,
+        marginBottom: Spacing.m,
     },
-    settingItem: {
+    menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: Spacing.m,
-        borderBottomWidth: 1,
-        borderBottomColor: Colors.border,
+        backgroundColor: colors.secondaryBackground,
+        padding: Spacing.m,
+        borderRadius: ComponentSizes.card.borderRadius,
+        marginBottom: Spacing.s,
+        ...Shadows.small,
     },
-    settingItemLast: {
-        borderBottomWidth: 0,
-    },
-    settingIconContainer: {
-        width: 40,
-        height: 40,
-        borderRadius: 12,
-        backgroundColor: Colors.secondaryBackground,
-        justifyContent: 'center',
+    menuIcon: {
+        width: responsiveScale(40),
+        height: responsiveScale(40),
+        borderRadius: responsiveScale(20),
         alignItems: 'center',
+        justifyContent: 'center',
         marginRight: Spacing.m,
     },
-    settingTextContainer: {
+    menuContent: {
         flex: 1,
     },
-    settingLabel: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: Colors.text,
+    menuText: {
+        fontSize: responsiveScale(16),
+        color: colors.text,
+        fontWeight: '500',
+        marginBottom: Spacing.xs / 2,
     },
-    settingDescription: {
-        fontSize: 12,
-        color: Colors.textSecondary,
-        marginTop: 2,
+    menuSubtext: {
+        fontSize: responsiveScale(14),
+        color: colors.textSecondary,
+    },
+    chevron: {
+        marginLeft: Spacing.s,
     },
     logoutButton: {
-        margin: Spacing.xl,
+        marginTop: Spacing.l,
+        marginHorizontal: Spacing.xs,
     },
 });
-

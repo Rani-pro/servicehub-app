@@ -1,31 +1,31 @@
 import React, { useMemo, useState } from 'react';
 import {
     View,
-    Text,
-    SafeAreaView,
     ScrollView,
     TouchableOpacity,
     Alert,
     Switch,
     Image,
     ActivityIndicator,
+    StatusBar,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import FeatherIcon from 'react-native-vector-icons/Feather';
 import { launchImageLibrary, launchCamera, ImagePickerResponse, MediaType } from 'react-native-image-picker';
-const Icon = FeatherIcon as any;
 
 import { Spacing } from '../../../../../shared/theme/theme';
 import Button from '../../../../../shared/components/Button';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
+import ResponsiveText from '../../../../../shared/components/ResponsiveText';
 import { logout as logoutAction } from '../../../../auth/store/authSlice';
 import { settingsRepository } from '../../../data/SettingsRepository';
 import { setLoading, setError, setTheme } from '../../../store/settingsSlice';
 import { getStyles } from './style';
 import { useTheme } from '../../../../../shared/hooks/useTheme';
 import { useAppSelector } from '../../../../../shared/hooks/reduxHooks';
+import { useResponsive } from '../../../../../shared/hooks/useResponsive';
 import { DrawerParamList } from '../../../../../navigation/navigationTypes';
 import { crashlyticsRepository } from '../../../../../core/crashlyticsRepository';
 
@@ -34,6 +34,7 @@ const SettingScreen = () => {
     const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
     const { colors, theme, isDark } = useTheme();
     const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
+    const { isSmallDevice } = useResponsive();
 
     const { isLoading } = useAppSelector((state) => state.settings);
     const { user } = useAppSelector((state) => state.auth);
@@ -82,14 +83,8 @@ const SettingScreen = () => {
             'Choose how you want to upload your photo',
             [
                 { text: 'Cancel', style: 'cancel' },
-                {
-                    text: '📷  Camera',
-                    onPress: () => openCamera(),
-                },
-                {
-                    text: '🖼️  Photo Library',
-                    onPress: () => openGallery(),
-                },
+                { text: '📷  Camera', onPress: () => openCamera() },
+                { text: '🖼️  Photo Library', onPress: () => openGallery() },
             ]
         );
     };
@@ -103,9 +98,7 @@ const SettingScreen = () => {
                 {
                     text: 'Test Crash',
                     style: 'destructive',
-                    onPress: () => {
-                        crashlyticsRepository.crash();
-                    },
+                    onPress: () => crashlyticsRepository.crash(),
                 },
             ]
         );
@@ -134,7 +127,6 @@ const SettingScreen = () => {
         const uri = response.assets?.[0]?.uri;
         if (uri) {
             setPhotoUploading(true);
-            // Simulate upload delay (replace with real upload logic)
             setTimeout(() => {
                 setProfilePhoto(uri);
                 setPhotoUploading(false);
@@ -142,157 +134,200 @@ const SettingScreen = () => {
         }
     };
 
-    const SettingItem = ({
-        icon,
-        label,
-        description,
-        onPress,
-        isLast = false,
-        rightElement
-    }: {
-        icon: string,
-        label: string,
-        description?: string,
-        onPress?: () => void,
-        isLast?: boolean,
-        rightElement?: React.ReactNode
-    }) => (
+    const preferenceItems = [
+        {
+            title: 'Dark Mode',
+            subtitle: isDark ? 'Dark theme enabled' : 'Light theme enabled',
+            icon: isDark ? 'weather-night' : 'white-balance-sunny',
+            color: '#F59E0B',
+            rightElement: (
+                <Switch
+                    value={isDark}
+                    onValueChange={toggleTheme}
+                    trackColor={{ false: '#767577', true: colors.primary }}
+                    thumbColor={isDark ? colors.white : '#f4f3f4'}
+                />
+            ),
+        },
+        {
+            title: 'Language',
+            subtitle: 'English (United States)',
+            icon: 'translate',
+            color: '#06B6D4',
+            onPress: () => {},
+        },
+    ];
+
+    const accountItems = [
+        {
+            title: 'Change Password',
+            subtitle: 'Keep your account secure',
+            icon: 'lock-outline',
+            color: '#3B82F6',
+            onPress: handleChangePassword,
+        },
+        {
+            title: 'Notifications',
+            subtitle: 'Manage your alerts',
+            icon: 'bell-outline',
+            color: '#F59E0B',
+            onPress: () => {},
+        },
+    ];
+
+    const privacyItems = [
+        {
+            title: 'Privacy Policy',
+            subtitle: 'Read our privacy policy',
+            icon: 'shield-outline',
+            color: '#8B5CF6',
+            onPress: () => {},
+        },
+        {
+            title: 'Terms of Service',
+            subtitle: 'Read our terms of service',
+            icon: 'file-document-outline',
+            color: '#06B6D4',
+            onPress: () => {},
+        },
+        {
+            title: 'Help & Support',
+            subtitle: 'Get help and contact support',
+            icon: 'help-circle-outline',
+            color: '#10B981',
+            onPress: () => {},
+        },
+    ];
+
+    const renderMenuItem = (
+        item: { title: string; subtitle: string; icon: string; color: string; onPress?: () => void; rightElement?: React.ReactNode },
+        index: number
+    ) => (
         <TouchableOpacity
-            style={[styles.settingItem, isLast && styles.settingItemLast]}
-            onPress={onPress}
-            activeOpacity={onPress ? 0.7 : 1}
-            disabled={!onPress}
+            key={index}
+            style={styles.menuItem}
+            onPress={item.onPress}
+            activeOpacity={item.onPress ? 0.7 : 1}
+            disabled={!item.onPress && !item.rightElement}
         >
-            <View style={styles.settingIconContainer}>
-                <Icon name={icon} size={20} color={colors.primary} />
+            <View style={[styles.menuIcon, { backgroundColor: item.color + '15' }]}>
+                <Icon
+                    name={item.icon}
+                    size={isSmallDevice ? 20 : 24}
+                    color={item.color}
+                />
             </View>
-            <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>{label}</Text>
-                {description && <Text style={styles.settingDescription}>{description}</Text>}
+            <View style={styles.menuContent}>
+                <ResponsiveText
+                    variant={isSmallDevice ? 'body' : 'h4'}
+                    style={styles.menuText}
+                >
+                    {item.title}
+                </ResponsiveText>
+                <ResponsiveText variant="bodySmall" style={styles.menuSubtext}>
+                    {item.subtitle}
+                </ResponsiveText>
             </View>
-            {rightElement ? rightElement : (
-                <Icon name="chevron-right" size={20} color={colors.textSecondary} />
+            {item.rightElement ? (
+                item.rightElement
+            ) : (
+                <Icon name="chevron-right" size={20} color={colors.textSecondary} style={styles.chevron} />
             )}
         </TouchableOpacity>
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+
             <CommonHeader
                 title="Settings"
                 leftElement="menu"
                 rightElement="notification"
             />
 
-            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={styles.content}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: Spacing.xl }}
+            >
+                {/* Profile Card */}
                 <View style={styles.profileCard}>
-                    {/* Avatar with camera upload badge */}
                     <TouchableOpacity
                         style={styles.avatarWrapper}
                         onPress={handlePickPhoto}
                         activeOpacity={0.85}
                     >
-                        <View style={styles.avatarContainer}>
+                        <View style={styles.avatar}>
                             {photoUploading ? (
                                 <ActivityIndicator size="large" color={colors.primary} />
                             ) : profilePhoto ? (
-                                <Image
-                                    source={{ uri: profilePhoto }}
-                                    style={styles.avatarImage}
-                                />
+                                <Image source={{ uri: profilePhoto }} style={styles.avatarImage} />
                             ) : (
-                                <Icon name="user" size={45} color={colors.primary} />
+                                <Icon
+                                    name="account"
+                                    size={isSmallDevice ? 40 : 50}
+                                    color={colors.primary}
+                                />
                             )}
                         </View>
-                        {/* Camera badge */}
                         <View style={[styles.cameraBadge, { backgroundColor: colors.primary }]}>
                             <Icon name="camera" size={13} color="#fff" />
                         </View>
                     </TouchableOpacity>
 
-                    <Text style={styles.userName}>{user?.displayName || user?.email?.split('@')[0] || 'User'}</Text>
-                    <Text style={styles.userEmail}>{user?.email || 'No email provided'}</Text>
-
-
+                    <ResponsiveText
+                        variant={isSmallDevice ? 'h3' : 'h2'}
+                        style={styles.userName}
+                    >
+                        {user?.displayName || user?.email?.split('@')[0] || 'User'}
+                    </ResponsiveText>
+                    <ResponsiveText variant="body" style={styles.userEmail}>
+                        {user?.email || 'No email provided'}
+                    </ResponsiveText>
                 </View>
 
-                <Text style={styles.sectionTitle}>App Preferences</Text>
-                <View style={styles.section}>
-                    <SettingItem
-                        icon={isDark ? "moon" : "sun"}
-                        label="Dark Mode"
-                        description={isDark ? "Dark theme enabled" : "Light theme enabled"}
-                        rightElement={
-                            <Switch
-                                value={isDark}
-                                onValueChange={toggleTheme}
-                                trackColor={{ false: '#767577', true: colors.primary }}
-                                thumbColor={isDark ? colors.white : '#f4f3f4'}
-                            />
-                        }
-                    />
-                    <SettingItem
-                        icon="globe"
-                        label="Language"
-                        description="English (United States)"
-                        onPress={() => { }}
-                        isLast={true}
-                    />
+                {/* App Preferences */}
+                <View style={styles.menuSection}>
+                    <ResponsiveText variant="h4" style={styles.sectionTitle}>
+                        App Preferences
+                    </ResponsiveText>
+                    {preferenceItems.map(renderMenuItem)}
                 </View>
 
-                <Text style={styles.sectionTitle}>Account Settings</Text>
-                <View style={styles.section}>
-                    <SettingItem
-                        icon="lock"
-                        label="Change Password"
-                        description="Keep your account secure"
-                        onPress={handleChangePassword}
-                    />
-                    <SettingItem
-                        icon="bell"
-                        label="Notifications"
-                        description="Manage your alerts"
-                        onPress={() => { }}
-                        isLast={true}
-                    />
+                {/* Account Settings */}
+                <View style={styles.menuSection}>
+                    <ResponsiveText variant="h4" style={styles.sectionTitle}>
+                        Account Settings
+                    </ResponsiveText>
+                    {accountItems.map(renderMenuItem)}
                 </View>
 
-                <Text style={styles.sectionTitle}>Privacy &amp; Support</Text>
-                <View style={styles.section}>
-                    <SettingItem
-                        icon="shield"
-                        label="Privacy Policy"
-                        onPress={() => { }}
-                    />
-                    <SettingItem
-                        icon="file-text"
-                        label="Terms of Service"
-                        onPress={() => { }}
-                    />
-                    <SettingItem
-                        icon="help-circle"
-                        label="Help &amp; Support"
-                        onPress={() => { }}
-                        isLast={true}
-                    />
+                {/* Privacy & Support */}
+                <View style={styles.menuSection}>
+                    <ResponsiveText variant="h4" style={styles.sectionTitle}>
+                        Privacy & Support
+                    </ResponsiveText>
+                    {privacyItems.map(renderMenuItem)}
                 </View>
 
-                {/* Developer Tools section - Only show in development */}
+                {/* Developer Tools */}
                 {__DEV__ && (
-                    <>
-                        <Text style={styles.sectionTitle}>Developer Tools</Text>
-                        <View style={styles.section}>
-                            <SettingItem
-                                icon="alert-triangle"
-                                label="Test Crashlytics"
-                                description="Force crash to test Crashlytics reporting"
-                                onPress={handleCrashlyticsTest}
-                                isLast={true}
-                            />
-                        </View>
-                    </>
+                    <View style={styles.menuSection}>
+                        <ResponsiveText variant="h4" style={styles.sectionTitle}>
+                            Developer Tools
+                        </ResponsiveText>
+                        {[{
+                            title: 'Test Crashlytics',
+                            subtitle: 'Force crash to test Crashlytics reporting',
+                            icon: 'alert-circle-outline',
+                            color: '#EF4444',
+                            onPress: handleCrashlyticsTest,
+                        }].map(renderMenuItem)}
+                    </View>
                 )}
 
+                {/* Logout */}
                 <View style={styles.logoutButton}>
                     <Button
                         title="Sign Out"
@@ -303,7 +338,7 @@ const SettingScreen = () => {
                     />
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 };
 

@@ -19,8 +19,6 @@ export const getStyles = (colors: any, backgroundColor: 'white' | 'primary' | 't
       paddingHorizontal: Spacing.m,
       paddingVertical: Spacing.xs,
       backgroundColor: headerBackgroundColor,
-      borderBottomWidth: isWhiteBackground ? 1 : 0,
-      borderBottomColor: colors.border,
       elevation: isTransparent ? 0 : (isWhiteBackground ? 2 : 4),
       shadowColor: colors.shadow,
       shadowOffset: { width: 0, height: 2 },
