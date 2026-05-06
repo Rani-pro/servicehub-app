@@ -72,7 +72,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="expo-version" />
+                        <option value="origin/expo-version" />
                       </list>
                     </value>
                   </entry>
