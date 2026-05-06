@@ -1,13 +1,7 @@
 import { useMemo } from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import {
-  getScreenSize,
   isTablet,
-  isSmallDevice,
-  isLargeDevice,
-  getGridColumns,
-  getCardWidth,
-  useBreakpoint,
   SCREEN_SIZES,
   type ScreenSize,
 } from '../utils/responsive';
@@ -22,22 +16,58 @@ export interface ResponsiveInfo {
   breakpoint: string;
   screenWidth: number;
   screenHeight: number;
+  isLandscape: boolean;
 }
 
 export const useResponsive = (): ResponsiveInfo => {
-  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
-  return useMemo(() => ({
-    screenSize: getScreenSize(),
-    isTablet: isTablet(),
-    isSmallDevice: isSmallDevice(),
-    isLargeDevice: isLargeDevice(),
-    gridColumns: getGridColumns(),
-    cardWidth: getCardWidth(),
-    breakpoint: useBreakpoint(),
-    screenWidth,
-    screenHeight,
-  }), [screenWidth, screenHeight]);
+  return useMemo(() => {
+    const isLandscape = screenWidth > screenHeight;
+
+    const getScreenSize = (): ScreenSize => {
+      if (screenWidth < 375) return SCREEN_SIZES.SMALL;
+      if (screenWidth <= 414) return SCREEN_SIZES.MEDIUM;
+      return SCREEN_SIZES.LARGE;
+    };
+
+    const screenSize = getScreenSize();
+    const tablet = screenWidth >= 768;
+    const small = screenSize === SCREEN_SIZES.SMALL;
+    const large = screenSize === SCREEN_SIZES.LARGE || tablet;
+
+    const getGridColumns = () => {
+      if (tablet) return isLandscape ? 4 : 3;
+      if (large) return isLandscape ? 3 : 2;
+      return isLandscape ? 3 : 2;
+    };
+
+    const gridColumns = getGridColumns();
+    const padding = 16;
+    const gap = 12;
+    const cardWidth = (screenWidth - padding * 2 - gap * (gridColumns - 1)) / gridColumns;
+
+    const getBreakpoint = () => {
+      if (screenWidth >= 1024) return 'xl';
+      if (screenWidth >= 768) return 'lg';
+      if (screenWidth >= 414) return 'md';
+      if (screenWidth >= 375) return 'sm';
+      return 'xs';
+    };
+
+    return {
+      screenSize,
+      isTablet: tablet,
+      isSmallDevice: small,
+      isLargeDevice: large,
+      gridColumns,
+      cardWidth,
+      breakpoint: getBreakpoint(),
+      screenWidth,
+      screenHeight,
+      isLandscape,
+    };
+  }, [screenWidth, screenHeight]);
 };
 
 // Hook for responsive values based on screen size
@@ -48,10 +78,10 @@ export const useResponsiveValue = <T>(values: {
   tablet?: T;
   default: T;
 }): T => {
-  const { screenSize, isTablet } = useResponsive();
+  const { screenSize, isTablet: tablet } = useResponsive();
 
   return useMemo(() => {
-    if (isTablet && values.tablet !== undefined) {
+    if (tablet && values.tablet !== undefined) {
       return values.tablet;
     }
 
@@ -65,5 +95,5 @@ export const useResponsiveValue = <T>(values: {
       default:
         return values.default;
     }
-  }, [screenSize, isTablet, values]);
+  }, [screenSize, tablet, values]);
 };

@@ -2,9 +2,15 @@
   "name": "SERVICEHUB",
   "version": "0.0.1",
   "private": true,
+  "workspaces": {
+    "nohoist": [
+      "backend",
+      "backend/**"
+    ]
+  },
   "scripts": {
     "android": "react-native run-android",
-    "android:staging": "cd android && ./gradlew installStagingDebug && cd .. && npx react-native start",
+    "android:staging": "cd android && ./gradlew installStagingDebug && adb shell am start -n com.servicehub.staging/com.servicehub.MainActivity && cd .. && npx react-native start",
     "android:prod": "cd android && ./gradlew installProductionDebug && cd .. && npx react-native start",
     "android:staging:release": "cd android && ./gradlew installStagingRelease",
     "android:prod:release": "cd android && ./gradlew installProductionRelease",

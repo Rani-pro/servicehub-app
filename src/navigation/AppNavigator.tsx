@@ -9,6 +9,7 @@ import LoginScreen from '../features/auth/presentation/screens/LoginScreen';
 import ServiceDetailScreen from '../features/services/presentation/screens/ServiceDetailScreen';
 import ChangePasswordScreen from '../features/settings/presentation/screens/ChangePasswordScreen';
 import NotificationsScreen from '../features/notifications/presentation/screens/NotificationsScreen';
+import BookingConfirmationScreen from '../features/bookings/presentation/screens/BookingConfirmationScreen';
 // Navigators
 import DrawerNavigator from './DrawerNavigator';
 import { RootState } from '../store/store';
@@ -53,6 +54,7 @@ const AppNavigator = () => {
                     <>
                         <Stack.Screen name="MainDrawer" component={DrawerNavigator} />
                         <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} />
+                        <Stack.Screen name="BookingConfirmation" component={BookingConfirmationScreen} />
                         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
                         <Stack.Screen name="Notifications" component={NotificationsScreen} />
                     </>

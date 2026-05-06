@@ -14,3 +14,16 @@ export interface ServicesApiResponse {
     services: Service[];
     total: number;
 }
+
+export interface BookingRequest {
+    serviceId: string;
+    serviceName: string;
+}
+
+export interface BookingResponse {
+    bookingId: string;
+    serviceId: string;
+    serviceName: string;
+    status: 'confirmed' | 'pending';
+    message: string;
+}

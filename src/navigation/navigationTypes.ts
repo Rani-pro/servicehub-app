@@ -5,6 +5,7 @@ export type RootStackParamList = {
     Login: undefined;
     MainDrawer: undefined;
     ServiceDetail: { serviceId: string; title: string };
+    BookingConfirmation: { bookingId: string; serviceName: string; status: string; message: string };
     ChangePassword: undefined;
     Notifications: undefined;
 };

@@ -1,5 +1,5 @@
 import { BaseRepository } from '../../../core/baseRepository';
-import { Service, ServicesApiResponse } from './models/Service';
+import { Service, ServicesApiResponse, BookingRequest, BookingResponse } from './models/Service';
 
 export class ServicesRepository extends BaseRepository {
     private static instance: ServicesRepository;
@@ -158,6 +158,33 @@ export class ServicesRepository extends BaseRepository {
                     );
                     resolve(filtered);
                 }, 400);
+            });
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
+    /**
+     * Book a service
+     * Endpoint: POST /bookings
+     * On success the backend triggers an FCM push to the device.
+     */
+    public async bookService(payload: BookingRequest): Promise<BookingResponse> {
+        try {
+            // Real API call - uncomment when backend is ready
+            // return await this.post<BookingResponse>('/bookings', payload);
+
+            // Mock: simulate network delay then return a confirmed booking
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        bookingId: `BK-${Date.now()}`,
+                        serviceId: payload.serviceId,
+                        serviceName: payload.serviceName,
+                        status: 'confirmed',
+                        message: `Your ${payload.serviceName} has been booked successfully!`,
+                    });
+                }, 1000);
             });
         } catch (error) {
             return this.handleError(error);

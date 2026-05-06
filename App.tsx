@@ -51,6 +51,7 @@ const Main = () => {
       
       // Get FCM token
       const token = await messagingRepository.getToken();
+      console.log(" TOKEN CHECK:", token);
       if (token) {
         console.log('FCM Token retrieved successfully');
         // TODO: Send token to your backend server

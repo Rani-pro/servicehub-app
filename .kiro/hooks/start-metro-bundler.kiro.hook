@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Start Metro Bundler",
+  "description": "Starts the React Native Metro bundler inside Kiro's integrated terminal",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npx react-native start",
+    "timeout": 0
+  }
+}

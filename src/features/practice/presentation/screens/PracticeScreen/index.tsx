@@ -3,6 +3,7 @@ import { SafeAreaView, ScrollView, View, Text, Alert, TouchableOpacity } from 'r
 import { useDispatch } from 'react-redux';
 import Counter from '../../components/Counter';
 import Timer from '../../components/Timer';
+import DestructuringPractice from '../../components/DestructuringPractice';
 import { styles } from './style';
 import Button from '../../../../../shared/components/Button';
 import { authRepository } from '../../../../auth/data/AuthRepository';
@@ -121,6 +122,11 @@ const PracticeScreen: React.FC = () => {
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Side Effects (useEffect)</Text>
                     <Timer label="Session Timer" />
+                </View>
+
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>ES6 Destructuring</Text>
+                    <DestructuringPractice />
                 </View>
             </ScrollView>
         </SafeAreaView>

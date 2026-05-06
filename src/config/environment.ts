@@ -10,14 +10,14 @@ const getBuildConfig = (): EnvironmentConfig => {
   if (NativeModules.BuildConfig) {
     return {
       ENVIRONMENT: NativeModules.BuildConfig.ENVIRONMENT || 'development',
-      API_BASE_URL: NativeModules.BuildConfig.API_BASE_URL || 'http://localhost:3000',
+      API_BASE_URL: NativeModules.BuildConfig.API_BASE_URL || 'http://10.0.2.2:3000',
     };
   }
-  
+
   // Fallback for development/iOS
   return {
     ENVIRONMENT: __DEV__ ? 'development' : 'production',
-    API_BASE_URL: __DEV__ ? 'http://localhost:3000' : 'https://api.servicehub.com',
+    API_BASE_URL: __DEV__ ? 'http://10.0.2.2:3000' : 'https://api.servicehub.com',
   };
 };
 
