@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 
-export const getStyles = (colors: any) =>
+export const getStyles = (colors: any, isLandscape: boolean = false) =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.background,
     },
     listContainer: {
-      padding: 16,
+      paddingTop: 16,
     },
     emptyContainer: {
       flex: 1,
@@ -16,12 +16,12 @@ export const getStyles = (colors: any) =>
     headerActions: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      marginBottom: 16,
+      marginBottom: isLandscape ? 8 : 16,
       paddingHorizontal: 4,
     },
     actionButton: {
       paddingHorizontal: 16,
-      paddingVertical: 8,
+      paddingVertical: isLandscape ? 6 : 8,
       borderRadius: 8,
       backgroundColor: colors.secondaryBackground,
     },
@@ -42,8 +42,8 @@ export const getStyles = (colors: any) =>
     notificationItem: {
       backgroundColor: colors.secondaryBackground,
       borderRadius: 12,
-      marginBottom: 12,
-      padding: 16,
+      marginBottom: isLandscape ? 8 : 12,
+      padding: isLandscape ? 10 : 16,
       borderWidth: 1,
       borderColor: colors.border,
     },
@@ -92,7 +92,7 @@ export const getStyles = (colors: any) =>
     emptyState: {
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: 64,
+      paddingVertical: isLandscape ? 24 : 64,
     },
     emptyTitle: {
       marginTop: 16,

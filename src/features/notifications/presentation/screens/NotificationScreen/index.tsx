@@ -1,18 +1,18 @@
-import React, { useEffect, useMemo } from 'react';
-import { View, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useMemo } from 'react';
+import { Alert, FlatList, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
+import Card from '../../../../../shared/components/Card';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import ResponsiveText from '../../../../../shared/components/ResponsiveText';
-import Card from '../../../../../shared/components/Card';
-import { useTheme } from '../../../../../shared/hooks/useTheme';
 import { useAppSelector } from '../../../../../shared/hooks/reduxHooks';
 import { useResponsive } from '../../../../../shared/hooks/useResponsive';
-import { Notification, markAsRead, markAllAsRead, removeNotification, clearAllNotifications } from '../../../store/notificationSlice';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { ComponentSizes, Spacing } from '../../../../../shared/theme/theme';
+import { NotificationModel, clearAllNotifications, markAllAsRead, markAsRead, removeNotification } from '../../../store/notificationSlice';
 import { getStyles } from './style';
-import { Spacing, ComponentSizes } from '../../../../../shared/theme/theme';
 
 const NotificationScreen = () => {
   const navigation = useNavigation();
@@ -20,14 +20,14 @@ const NotificationScreen = () => {
   const { colors } = useTheme();
   const { isSmallDevice } = useResponsive();
   const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
-  
+
   const { notifications, unreadCount } = useAppSelector((state) => state.notifications);
 
-  const handleNotificationPress = (notification: Notification) => {
+  const handleNotificationPress = (notification: NotificationModel) => {
     if (!notification.read) {
       dispatch(markAsRead(notification.id));
     }
-    
+
     // Handle navigation based on notification data
     if (notification.data?.screen) {
       navigation.navigate(notification.data.screen as any, notification.data.params as any);
@@ -96,16 +96,16 @@ const NotificationScreen = () => {
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
     if (days < 7) return `${days}d ago`;
-    
+
     return new Date(timestamp).toLocaleDateString();
   };
 
-  const renderNotification = ({ item }: { item: Notification }) => (
-    <Card 
-      padding="medium" 
-      shadow="small" 
-      style={!item.read ? 
-        [styles.notificationCard, styles.unreadCard] as any : 
+  const renderNotification = ({ item }: { item: NotificationModel }) => (
+    <Card
+      padding="medium"
+      shadow="small"
+      style={!item.read ?
+        [styles.notificationCard, styles.unreadCard] as any :
         styles.notificationCard
       }
     >
@@ -125,8 +125,8 @@ const NotificationScreen = () => {
           <View style={styles.notificationInfo}>
             <ResponsiveText
               variant={isSmallDevice ? "body" : "h4"}
-              style={!item.read ? 
-                [styles.notificationTitle, styles.unreadTitle] as any : 
+              style={!item.read ?
+                [styles.notificationTitle, styles.unreadTitle] as any :
                 styles.notificationTitle
               }
               numberOfLines={2}
@@ -226,7 +226,7 @@ const NotificationScreen = () => {
           // Show action sheet or menu for bulk actions
         }}
       />
-      
+
       <FlatList
         data={notifications}
         renderItem={renderNotification}

@@ -1,13 +1,13 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { BaseRepository } from '../../../core/baseRepository';
-import { User } from './models/User';
+import { UserModel, UserSchema } from '../../../shared/schema';
 
 export class AuthRepository extends BaseRepository {
     private get auth() {
         return auth();
     }
 
-    async login(email: string, password: string): Promise<User> {
+    async login(email: string, password: string): Promise<UserModel> {
         try {
             const userCredential = await this.auth.signInWithEmailAndPassword(email.trim(), password);
             return this.mapFirebaseUser(userCredential.user);
@@ -16,7 +16,7 @@ export class AuthRepository extends BaseRepository {
         }
     }
 
-    async signUp(email: string, password: string): Promise<User> {
+    async signUp(email: string, password: string): Promise<UserModel> {
         try {
             const userCredential = await this.auth.createUserWithEmailAndPassword(email.trim(), password);
             return this.mapFirebaseUser(userCredential.user);
@@ -25,7 +25,7 @@ export class AuthRepository extends BaseRepository {
         }
     }
 
-    async loginWithName(name: string): Promise<User> {
+    async loginWithName(name: string): Promise<UserModel> {
         try {
             const userCredential = await this.auth.signInAnonymously();
             await userCredential.user.updateProfile({
@@ -53,12 +53,12 @@ export class AuthRepository extends BaseRepository {
         }
     }
 
-    getCurrentUser(): User | null {
+    getCurrentUser(): UserModel | null {
         const user = this.auth.currentUser;
         return user ? this.mapFirebaseUser(user) : null;
     }
 
-    onAuthStateChanged(callback: (user: User | null) => void) {
+    onAuthStateChanged(callback: (user: UserModel | null) => void) {
         return this.auth.onAuthStateChanged((user) => {
             callback(user ? this.mapFirebaseUser(user) : null);
         });
@@ -78,13 +78,14 @@ export class AuthRepository extends BaseRepository {
     }
 
 
-    private mapFirebaseUser(user: FirebaseAuthTypes.User): User {
-        return {
+    private mapFirebaseUser(user: FirebaseAuthTypes.User): UserModel {
+        const payload = {
             id: user.uid,
             email: user.email,
             displayName: user.displayName,
             photoURL: user.photoURL,
         };
+        return UserSchema.parse(payload);
     }
 
     protected handleError(error: any): never {

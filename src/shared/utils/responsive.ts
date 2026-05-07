@@ -1,11 +1,11 @@
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { Dimensions, Platform } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
 
 // ─── Screen Size Categories ────────────────────────────────────────────────
 export const SCREEN_SIZES = {
@@ -18,13 +18,15 @@ export type ScreenSize = typeof SCREEN_SIZES[keyof typeof SCREEN_SIZES];
 
 // ─── Device Detection ──────────────────────────────────────────────────────
 export const getScreenSize = (): ScreenSize => {
+  const { width: SCREEN_WIDTH } = Dimensions.get('window');
   if (SCREEN_WIDTH < 375) return SCREEN_SIZES.SMALL;
   if (SCREEN_WIDTH <= 414) return SCREEN_SIZES.MEDIUM;
   return SCREEN_SIZES.LARGE;
 };
 
 export const isTablet = (): boolean => {
-  return SCREEN_WIDTH >= 768;
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+  return Math.min(SCREEN_WIDTH, SCREEN_HEIGHT) >= 768;
 };
 
 export const isSmallDevice = (): boolean => {
@@ -43,13 +45,13 @@ export const responsiveHeight = (percentage: number): number => hp(percentage);
 // Use these for scaling based on device size
 export const responsiveScale = (size: number): number => scale(size);
 export const responsiveVerticalScale = (size: number): number => verticalScale(size);
-export const responsiveModerateScale = (size: number, factor?: number): number => 
+export const responsiveModerateScale = (size: number, factor?: number): number =>
   moderateScale(size, factor);
 
 // ─── Font Scaling ──────────────────────────────────────────────────────────
 export const getFontSize = (size: number): number => {
   const screenSize = getScreenSize();
-  
+
   switch (screenSize) {
     case SCREEN_SIZES.SMALL:
       return responsiveModerateScale(size * 0.9); // 10% smaller on small devices
@@ -63,7 +65,7 @@ export const getFontSize = (size: number): number => {
 // ─── Spacing Scaling ───────────────────────────────────────────────────────
 export const getSpacing = (spacing: number): number => {
   const screenSize = getScreenSize();
-  
+
   switch (screenSize) {
     case SCREEN_SIZES.SMALL:
       return responsiveScale(spacing * 0.8); // 20% smaller spacing on small devices
@@ -77,7 +79,7 @@ export const getSpacing = (spacing: number): number => {
 // ─── Component Sizing ──────────────────────────────────────────────────────
 export const getButtonHeight = (): number => {
   const screenSize = getScreenSize();
-  
+
   switch (screenSize) {
     case SCREEN_SIZES.SMALL:
       return responsiveVerticalScale(48); // Consistent with input height
@@ -90,7 +92,7 @@ export const getButtonHeight = (): number => {
 
 export const getInputHeight = (): number => {
   const screenSize = getScreenSize();
-  
+
   switch (screenSize) {
     case SCREEN_SIZES.SMALL:
       return responsiveVerticalScale(48); // Increased for better touch target
@@ -103,16 +105,19 @@ export const getInputHeight = (): number => {
 
 // ─── Grid and Layout ───────────────────────────────────────────────────────
 export const getGridColumns = (): number => {
-  if (isTablet()) return 3;
-  if (isLargeDevice()) return 2;
-  return 2; // Default for small and medium devices
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+  const isLandscape = SCREEN_WIDTH > SCREEN_HEIGHT;
+  if (isTablet()) return isLandscape ? 4 : 3;
+  if (isLargeDevice()) return isLandscape ? 3 : 2;
+  return isLandscape ? 3 : 2; // Default for small and medium devices
 };
 
 export const getCardWidth = (): number => {
+  const { width: SCREEN_WIDTH } = Dimensions.get('window');
   const columns = getGridColumns();
   const padding = getSpacing(16); // Base padding
   const gap = getSpacing(12); // Gap between cards
-  
+
   return (SCREEN_WIDTH - (padding * 2) - (gap * (columns - 1))) / columns;
 };
 
@@ -132,6 +137,7 @@ export const BREAKPOINTS = {
 } as const;
 
 export const useBreakpoint = () => {
+  const { width: SCREEN_WIDTH } = Dimensions.get('window');
   if (SCREEN_WIDTH >= BREAKPOINTS.xl) return 'xl';
   if (SCREEN_WIDTH >= BREAKPOINTS.lg) return 'lg';
   if (SCREEN_WIDTH >= BREAKPOINTS.md) return 'md';
@@ -141,9 +147,11 @@ export const useBreakpoint = () => {
 
 // ─── Safe Area Helpers ─────────────────────────────────────────────────────
 export const getStatusBarHeight = (): number => {
+  const { height: SCREEN_HEIGHT } = Dimensions.get('window');
   return Platform.OS === 'ios' ? (SCREEN_HEIGHT >= 812 ? 44 : 20) : 0;
 };
 
 export const getBottomSafeArea = (): number => {
+  const { height: SCREEN_HEIGHT } = Dimensions.get('window');
   return Platform.OS === 'ios' && SCREEN_HEIGHT >= 812 ? 34 : 0;
 };

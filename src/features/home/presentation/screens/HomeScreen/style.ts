@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 import { ComponentSizes, Shadows } from '../../../../../shared/theme/theme';
-import { responsiveWidth, getSpacing, responsiveScale } from '../../../../../shared/utils/responsive';
+import { getSpacing, responsiveScale } from '../../../../../shared/utils/responsive';
 
-export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
+export const getStyles = (Colors: any, Spacing: any, isLandscape: boolean = false) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.background,
@@ -46,8 +46,8 @@ export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
         backgroundColor: Colors.danger,
     },
     scrollContent: {
-        paddingHorizontal: responsiveWidth(4),
         paddingVertical: Spacing.xs / 2,
+        paddingHorizontal: 16,
         flexGrow: 1,
     },
     quickActionsContainer: {
@@ -67,7 +67,7 @@ export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: Spacing.m,
+        paddingVertical: isLandscape ? Spacing.xs : Spacing.m,
         paddingHorizontal: Spacing.s,
         borderRadius: ComponentSizes.card.borderRadius,
         ...Shadows.medium,
@@ -103,16 +103,16 @@ export const getStyles = (Colors: any, Spacing: any) => StyleSheet.create({
     cardContent: {
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: getSpacing(50),
-        paddingVertical: Spacing.xs/2,
+        minHeight: isLandscape ? getSpacing(30) : getSpacing(50),
+        paddingVertical: isLandscape ? 2 : Spacing.xs / 2,
     },
     iconContainer: {
-        width: responsiveScale(60),
-        height: responsiveScale(60),
-        borderRadius: responsiveScale(30),
+        width: isLandscape ? responsiveScale(40) : responsiveScale(60),
+        height: isLandscape ? responsiveScale(40) : responsiveScale(60),
+        borderRadius: isLandscape ? responsiveScale(20) : responsiveScale(30),
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: Spacing.s,
+        marginBottom: isLandscape ? 2 : Spacing.s,
     },
     cardTitle: {
         textAlign: 'center',

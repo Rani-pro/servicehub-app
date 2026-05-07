@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Notification, NotificationState } from '../types';
+import { NotificationModel, NotificationStateData } from '../../../shared/schema';
 
-const initialState: NotificationState = {
+const initialState: NotificationStateData = {
   notifications: [],
   unreadCount: 0,
   isLoading: false,
@@ -19,7 +19,7 @@ const notificationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    addNotification: (state, action: PayloadAction<Notification>) => {
+    addNotification: (state, action: PayloadAction<NotificationModel>) => {
       state.notifications.unshift(action.payload);
       if (!action.payload.read) {
         state.unreadCount += 1;
@@ -48,7 +48,7 @@ const notificationSlice = createSlice({
         state.notifications.splice(index, 1);
       }
     },
-    setNotifications: (state, action: PayloadAction<Notification[]>) => {
+    setNotifications: (state, action: PayloadAction<NotificationModel[]>) => {
       state.notifications = action.payload;
       state.unreadCount = action.payload.filter(n => !n.read).length;
     },
@@ -71,6 +71,6 @@ export const {
 } = notificationSlice.actions;
 
 // Re-export types for convenience
-export type { Notification } from '../types';
+export type { NotificationModel } from '../../../shared/schema';
 
 export default notificationSlice.reducer;

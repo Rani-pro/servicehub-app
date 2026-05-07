@@ -1,13 +1,6 @@
-import { useAppSelector, useAppDispatch } from './reduxHooks';
-import { 
-  markAsRead, 
-  markAllAsRead, 
-  removeNotification, 
-  clearAllNotifications,
-  addNotification,
-  Notification 
-} from '../../features/notifications/store/notificationSlice';
 import { notificationService } from '../../core/notificationService';
+import { addNotification, clearAllNotifications as clearAllNotificationsAction, markAllAsRead, markAsRead, NotificationModel, removeNotification } from '../../features/notifications/store/notificationSlice';
+import { useAppDispatch, useAppSelector } from './reduxHooks';
 
 export const useNotifications = () => {
   const dispatch = useAppDispatch();
@@ -28,18 +21,18 @@ export const useNotifications = () => {
   };
 
   const clearAllNotifications = () => {
-    dispatch(clearAllNotifications());
+    dispatch(clearAllNotificationsAction());
   };
 
   const createLocalNotification = (
-    title: string, 
-    body: string, 
+    title: string,
+    body: string,
     data?: Record<string, any>
   ) => {
     notificationService.createLocalNotification(title, body, data);
   };
 
-  const addNotificationToStore = (notification: Notification) => {
+  const addNotificationToStore = (notification: NotificationModel) => {
     dispatch(addNotification(notification));
   };
 
@@ -49,7 +42,7 @@ export const useNotifications = () => {
     unreadCount,
     isLoading,
     error,
-    
+
     // Actions
     markNotificationAsRead,
     markAllNotificationsAsRead,

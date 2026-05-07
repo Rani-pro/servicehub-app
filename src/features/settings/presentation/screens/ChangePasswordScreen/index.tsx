@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useMemo, useState } from 'react';
 import {
-    View,
-    Text,
-    SafeAreaView,
+    Alert,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    Alert,
-    TouchableOpacity,
+    View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Colors, Spacing } from '../../../../../shared/theme/theme';
-import Input from '../../../../../shared/components/Input';
+import { z } from 'zod';
 import Button from '../../../../../shared/components/Button';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
+import Input from '../../../../../shared/components/Input';
+import ResponsiveText from '../../../../../shared/components/ResponsiveText';
+import { useResponsive } from '../../../../../shared/hooks/useResponsive';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { ChangePasswordFormSchema } from '../../../../../shared/schema';
+import { Spacing } from '../../../../../shared/theme/theme';
 import { settingsRepository } from '../../../data/SettingsRepository';
-import { styles } from './style';
+import { getStyles } from './style';
 
 const ChangePasswordScreen = () => {
     const navigation = useNavigation();
@@ -26,19 +29,22 @@ const ChangePasswordScreen = () => {
     const [showPasswords, setShowPasswords] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const { isLandscape, screenWidth } = useResponsive();
+    const insets = useSafeAreaInsets();
+    const { colors } = useTheme();
+    const styles = useMemo(() => getStyles(isLandscape, colors), [isLandscape, screenWidth, colors]);
+
     const handleChangePassword = async () => {
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            Alert.alert('Error', 'Please fill in all fields');
-            return;
-        }
-
-        if (newPassword.length < 6) {
-            Alert.alert('Error', 'New password must be at least 6 characters long');
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match');
+        try {
+            ChangePasswordFormSchema.parse({
+                currentPassword,
+                newPassword,
+                confirmPassword,
+            });
+        } catch (error: any) {
+            if (error instanceof z.ZodError) {
+                Alert.alert('Validation Error', error.issues[0].message);
+            }
             return;
         }
 
@@ -46,7 +52,7 @@ const ChangePasswordScreen = () => {
         try {
             await settingsRepository.changePassword(newPassword);
             Alert.alert('Success', 'Your password has been updated successfully', [
-                { text: 'OK', onPress: () => navigation.goBack() }
+                { text: 'OK', onPress: () => navigation.goBack() },
             ]);
         } catch (error: any) {
             Alert.alert('Error', error.message);
@@ -56,7 +62,7 @@ const ChangePasswordScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <CommonHeader
                 title="Change Password"
                 leftElement="back"
@@ -67,12 +73,30 @@ const ChangePasswordScreen = () => {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
             >
-                <ScrollView contentContainerStyle={styles.content}>
+                <ScrollView
+                    contentContainerStyle={[
+                        styles.content,
+                        {
+                            paddingLeft: Math.max(Spacing.m, insets.left + Spacing.s),
+                            paddingRight: Math.max(Spacing.m, insets.right + Spacing.s),
+                            paddingBottom: Math.max(Spacing.xl, insets.bottom + Spacing.m),
+                        },
+                    ]}
+                    showsVerticalScrollIndicator={false}
+                >
                     <View style={styles.infoCard}>
-                        <Icon name="shield-lock-outline" size={40} color={Colors.primary} />
-                        <Text style={styles.infoText}>
+                        <Icon
+                            name="shield-lock-outline"
+                            size={isLandscape ? 30 : 40}
+                            color={colors.primary}
+                        />
+                        <ResponsiveText
+                            variant="bodySmall"
+                            style={styles.infoText}
+                            align="center"
+                        >
                             Choose a strong password with at least 6 characters to keep your account secure.
-                        </Text>
+                        </ResponsiveText>
                     </View>
 
                     <View style={styles.form}>
@@ -111,7 +135,7 @@ const ChangePasswordScreen = () => {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
     );
 };
 

@@ -1,7 +1,7 @@
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { Platform, Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
+import { addNotification, NotificationModel } from '../features/notifications/store/notificationSlice';
 import { store } from '../store/store';
-import { addNotification, Notification } from '../features/notifications/store/notificationSlice';
 import { crashlyticsRepository } from './crashlyticsRepository';
 
 class NotificationService {
@@ -95,10 +95,10 @@ class NotificationService {
   private setupForegroundMessageListener(): void {
     this.unsubscribeForegroundMessages = messaging().onMessage(async (remoteMessage) => {
       console.log('Foreground message received:', remoteMessage);
-      
+
       // Add notification to Redux store
       this.addNotificationToStore(remoteMessage);
-      
+
       // Show in-app notification
       this.showInAppNotification(remoteMessage);
     });
@@ -110,10 +110,10 @@ class NotificationService {
   private setupBackgroundMessageHandler(): void {
     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       console.log('Background message received:', remoteMessage);
-      
+
       // Add notification to Redux store
       this.addNotificationToStore(remoteMessage);
-      
+
       // Handle background notification logic
       await this.handleBackgroundNotification(remoteMessage);
     });
@@ -123,7 +123,7 @@ class NotificationService {
    * Add notification to Redux store
    */
   private addNotificationToStore(remoteMessage: FirebaseMessagingTypes.RemoteMessage): void {
-    const notification: Notification = {
+    const notification: NotificationModel = {
       id: remoteMessage.messageId || Date.now().toString(),
       title: remoteMessage.notification?.title || 'New Notification',
       body: remoteMessage.notification?.body || '',
@@ -168,7 +168,7 @@ class NotificationService {
   private async handleBackgroundNotification(remoteMessage: FirebaseMessagingTypes.RemoteMessage): Promise<void> {
     // Perform any background tasks
     console.log('Processing background notification:', remoteMessage.messageId);
-    
+
     // Update badge count, sync data, etc.
     // This runs even when the app is closed
   }
@@ -179,7 +179,7 @@ class NotificationService {
   private handleNotificationTap(remoteMessage: FirebaseMessagingTypes.RemoteMessage): void {
     // Navigate to specific screen based on notification data
     const { data } = remoteMessage;
-    
+
     if (data?.screen) {
       // Navigation will be handled by the component that receives this
       console.log('Navigate to:', data.screen, data.params);
@@ -220,7 +220,7 @@ class NotificationService {
    * Create local notification
    */
   createLocalNotification(title: string, body: string, data?: Record<string, any>): void {
-    const notification: Notification = {
+    const notification: NotificationModel = {
       id: Date.now().toString(),
       title,
       body,
@@ -249,7 +249,7 @@ class NotificationService {
       this.unsubscribeTokenRefresh();
       this.unsubscribeTokenRefresh = null;
     }
-    
+
     if (this.unsubscribeForegroundMessages) {
       this.unsubscribeForegroundMessages();
       this.unsubscribeForegroundMessages = null;

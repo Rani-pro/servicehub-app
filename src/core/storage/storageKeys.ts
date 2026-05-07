@@ -17,5 +17,6 @@ export const STORAGE_KEYS = {
     USER: {
         PREFERENCES: 'user.preferences',
         SETTINGS: 'user.settings',
+        THEME: 'user.theme',
     },
 } as const;

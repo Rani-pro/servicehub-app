@@ -1,11 +1,14 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
+import { z } from 'zod';
+import { BookingConfirmationNavParamsSchema, ServiceDetailNavParamsSchema } from '../shared/schema';
+
 export type RootStackParamList = {
     Splash: undefined;
     Login: undefined;
     MainDrawer: undefined;
-    ServiceDetail: { serviceId: string; title: string };
-    BookingConfirmation: { bookingId: string; serviceName: string; status: string; message: string };
+    ServiceDetail: z.infer<typeof ServiceDetailNavParamsSchema>;
+    BookingConfirmation: z.infer<typeof BookingConfirmationNavParamsSchema>;
     ChangePassword: undefined;
     Notifications: undefined;
 };

@@ -1,40 +1,45 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useMemo, useState } from 'react';
 import {
-    View,
-    ScrollView,
-    TouchableOpacity,
-    Alert,
-    Switch,
-    Image,
     ActivityIndicator,
+    Alert,
+    Image,
+    ScrollView,
     StatusBar,
+    Switch,
+    TouchableOpacity,
+    View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { launchImageLibrary, launchCamera, ImagePickerResponse, MediaType } from 'react-native-image-picker';
 
-import { Spacing } from '../../../../../shared/theme/theme';
+import { crashlyticsRepository } from '../../../../../core/crashlyticsRepository';
 import Button from '../../../../../shared/components/Button';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import ResponsiveText from '../../../../../shared/components/ResponsiveText';
-import { logout as logoutAction } from '../../../../auth/store/authSlice';
-import { settingsRepository } from '../../../data/SettingsRepository';
-import { setLoading, setError, setTheme } from '../../../store/settingsSlice';
-import { getStyles } from './style';
-import { useTheme } from '../../../../../shared/hooks/useTheme';
 import { useAppSelector } from '../../../../../shared/hooks/reduxHooks';
 import { useResponsive } from '../../../../../shared/hooks/useResponsive';
-import { DrawerParamList } from '../../../../../navigation/navigationTypes';
-import { crashlyticsRepository } from '../../../../../core/crashlyticsRepository';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { Spacing } from '../../../../../shared/theme/theme';
+import { logout as logoutAction } from '../../../../auth/store/authSlice';
+import { settingsRepository } from '../../../data/SettingsRepository';
+import { setError, setLoading, setTheme } from '../../../store/settingsSlice';
+import { getStyles } from './style';
 
 const SettingScreen = () => {
     const dispatch = useDispatch();
-    const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { colors, theme, isDark } = useTheme();
-    const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
-    const { isSmallDevice } = useResponsive();
+    const { isSmallDevice, isLandscape, screenWidth } = useResponsive();
+    const insets = useSafeAreaInsets();
+
+    const styles = useMemo(
+        () => getStyles(colors, Spacing, isLandscape),
+        [colors, isLandscape, screenWidth],
+    );
 
     const { isLoading } = useAppSelector((state) => state.settings);
     const { user } = useAppSelector((state) => state.auth);
@@ -64,7 +69,7 @@ const SettingScreen = () => {
                         }
                     },
                 },
-            ]
+            ],
         );
     };
 
@@ -74,7 +79,7 @@ const SettingScreen = () => {
     };
 
     const handleChangePassword = () => {
-        navigation.navigate('ChangePassword' as never);
+        navigation.navigate('ChangePassword');
     };
 
     const handlePickPhoto = () => {
@@ -85,7 +90,7 @@ const SettingScreen = () => {
                 { text: 'Cancel', style: 'cancel' },
                 { text: '📷  Camera', onPress: () => openCamera() },
                 { text: '🖼️  Photo Library', onPress: () => openGallery() },
-            ]
+            ],
         );
     };
 
@@ -100,31 +105,41 @@ const SettingScreen = () => {
                     style: 'destructive',
                     onPress: () => crashlyticsRepository.crash(),
                 },
-            ]
+            ],
         );
     };
 
-    const openCamera = () => {
-        launchCamera(
-            { mediaType: 'photo' as MediaType, quality: 0.8, saveToPhotos: false },
-            handleImageResponse
-        );
-    };
-
-    const openGallery = () => {
-        launchImageLibrary(
-            { mediaType: 'photo' as MediaType, quality: 0.8, selectionLimit: 1 },
-            handleImageResponse
-        );
-    };
-
-    const handleImageResponse = (response: ImagePickerResponse) => {
-        if (response.didCancel) return;
-        if (response.errorCode) {
-            Alert.alert('Error', response.errorMessage || 'Could not pick image');
+    const openCamera = async () => {
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) {
+            Alert.alert('Permission Required', 'Camera access is needed to take a photo.');
             return;
         }
-        const uri = response.assets?.[0]?.uri;
+        const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.8,
+            allowsEditing: false,
+        });
+        handleImageResult(result);
+    };
+
+    const openGallery = async () => {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) {
+            Alert.alert('Permission Required', 'Photo library access is needed to select a photo.');
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.8,
+            allowsMultipleSelection: false,
+        });
+        handleImageResult(result);
+    };
+
+    const handleImageResult = (result: ImagePicker.ImagePickerResult) => {
+        if (result.canceled) return;
+        const uri = result.assets?.[0]?.uri;
         if (uri) {
             setPhotoUploading(true);
             setTimeout(() => {
@@ -154,7 +169,7 @@ const SettingScreen = () => {
             subtitle: 'English (United States)',
             icon: 'translate',
             color: '#06B6D4',
-            onPress: () => {},
+            onPress: () => { },
         },
     ];
 
@@ -171,7 +186,7 @@ const SettingScreen = () => {
             subtitle: 'Manage your alerts',
             icon: 'bell-outline',
             color: '#F59E0B',
-            onPress: () => {},
+            onPress: () => navigation.navigate('Notifications'),
         },
     ];
 
@@ -181,27 +196,27 @@ const SettingScreen = () => {
             subtitle: 'Read our privacy policy',
             icon: 'shield-outline',
             color: '#8B5CF6',
-            onPress: () => {},
+            onPress: () => { },
         },
         {
             title: 'Terms of Service',
             subtitle: 'Read our terms of service',
             icon: 'file-document-outline',
             color: '#06B6D4',
-            onPress: () => {},
+            onPress: () => { },
         },
         {
             title: 'Help & Support',
             subtitle: 'Get help and contact support',
             icon: 'help-circle-outline',
             color: '#10B981',
-            onPress: () => {},
+            onPress: () => { },
         },
     ];
 
     const renderMenuItem = (
         item: { title: string; subtitle: string; icon: string; color: string; onPress?: () => void; rightElement?: React.ReactNode },
-        index: number
+        index: number,
     ) => (
         <TouchableOpacity
             key={index}
@@ -213,13 +228,13 @@ const SettingScreen = () => {
             <View style={[styles.menuIcon, { backgroundColor: item.color + '15' }]}>
                 <Icon
                     name={item.icon}
-                    size={isSmallDevice ? 20 : 24}
+                    size={isSmallDevice || isLandscape ? 20 : 24}
                     color={item.color}
                 />
             </View>
             <View style={styles.menuContent}>
                 <ResponsiveText
-                    variant={isSmallDevice ? 'body' : 'h4'}
+                    variant={isSmallDevice || isLandscape ? 'body' : 'h4'}
                     style={styles.menuText}
                 >
                     {item.title}
@@ -238,7 +253,7 @@ const SettingScreen = () => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={colors.background} />
 
             <CommonHeader
                 title="Settings"
@@ -249,7 +264,11 @@ const SettingScreen = () => {
             <ScrollView
                 style={styles.content}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: Spacing.xl }}
+                contentContainerStyle={{
+                    paddingBottom: Math.max(Spacing.s, insets.bottom + Spacing.xs),
+                    paddingLeft: insets.left,
+                    paddingRight: insets.right,
+                }}
             >
                 {/* Profile Card */}
                 <View style={styles.profileCard}>
@@ -266,7 +285,7 @@ const SettingScreen = () => {
                             ) : (
                                 <Icon
                                     name="account"
-                                    size={isSmallDevice ? 40 : 50}
+                                    size={isLandscape ? 30 : (isSmallDevice ? 40 : 50)}
                                     color={colors.primary}
                                 />
                             )}
@@ -276,15 +295,17 @@ const SettingScreen = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <ResponsiveText
-                        variant={isSmallDevice ? 'h3' : 'h2'}
-                        style={styles.userName}
-                    >
-                        {user?.displayName || user?.email?.split('@')[0] || 'User'}
-                    </ResponsiveText>
-                    <ResponsiveText variant="body" style={styles.userEmail}>
-                        {user?.email || 'No email provided'}
-                    </ResponsiveText>
+                    <View style={styles.profileInfo}>
+                        <ResponsiveText
+                            variant={isLandscape ? 'h4' : (isSmallDevice ? 'h3' : 'h2')}
+                            style={styles.userName}
+                        >
+                            {user?.displayName || user?.email?.split('@')[0] || 'User'}
+                        </ResponsiveText>
+                        <ResponsiveText variant="body" style={styles.userEmail}>
+                            {user?.email || 'No email provided'}
+                        </ResponsiveText>
+                    </View>
                 </View>
 
                 {/* App Preferences */}

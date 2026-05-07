@@ -1,19 +1,20 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, SafeAreaView, ActivityIndicator, RefreshControl } from 'react-native';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-const Icon = MaterialIcon as any;
-import { useNavigation } from '@react-navigation/native';
-import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { BottomTabParamList, DrawerParamList } from '../../../../../navigation/navigationTypes';
-import { ServicesRepository } from '../../../data/ServicesRepository';
-import { Service } from '../../../data/models/Service';
-import { getStyles } from './style';
-import { CommonHeader } from '../../../../../shared/components/CommonHeader';
-import { Spacing } from '../../../../../shared/theme/theme';
-import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ApiError } from '../../../../../core/api/apiErrorHandler';
+import { BottomTabParamList, DrawerParamList } from '../../../../../navigation/navigationTypes';
+import { CommonHeader } from '../../../../../shared/components/CommonHeader';
+import { useResponsive } from '../../../../../shared/hooks/useResponsive';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { ServiceModel } from '../../../../../shared/schema';
+import { Spacing } from '../../../../../shared/theme/theme';
+import { ServicesRepository } from '../../../data/ServicesRepository';
+import { getStyles } from './style';
+const Icon = MaterialIcon as any;
 
 type NavigationProp = CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList, 'Services'>,
@@ -23,9 +24,15 @@ type NavigationProp = CompositeNavigationProp<
 const ServicesListScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const { colors } = useTheme();
-    const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
-    
-    const [services, setServices] = useState<Service[]>([]);
+    const { isLandscape, screenWidth } = useResponsive();
+    const insets = useSafeAreaInsets();
+
+    const styles = useMemo(
+        () => getStyles(colors, Spacing, isLandscape),
+        [colors, isLandscape, screenWidth],
+    );
+
+    const [services, setServices] = useState<ServiceModel[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -40,12 +47,12 @@ const ServicesListScreen = () => {
                 setLoading(true);
             }
             setError(null);
-            
+
             const data = await ServicesRepository.getInstance().getServices();
             setServices(data);
         } catch (err) {
-            const errorMessage = err instanceof ApiError 
-                ? err.message 
+            const errorMessage = err instanceof ApiError
+                ? err.message
                 : 'Failed to load services. Please try again.';
             setError(errorMessage);
             console.error('Error loading services:', err);
@@ -60,14 +67,14 @@ const ServicesListScreen = () => {
         loadServices(true);
     }, []);
 
-    const renderServiceItem = ({ item }: { item: Service }) => (
+    const renderServiceItem = ({ item }: { item: ServiceModel }) => (
         <TouchableOpacity
             style={styles.serviceCard}
             onPress={() => navigation.navigate('ServiceDetail' as any, { serviceId: item.id, title: item.name })}
             activeOpacity={0.7}
         >
             <View style={styles.iconContainer}>
-                <Icon name={item.icon} size={32} color={colors.primary} />
+                <Icon name={item.icon} size={isLandscape ? 24 : 32} color={colors.primary} />
             </View>
             <View style={styles.textContainer}>
                 <View style={styles.nameRow}>
@@ -79,7 +86,7 @@ const ServicesListScreen = () => {
                         </View>
                     )}
                 </View>
-                <Text style={styles.serviceDescription} numberOfLines={2}>
+                <Text style={styles.serviceDescription} numberOfLines={isLandscape ? 1 : 2}>
                     {item.description}
                 </Text>
                 <View style={styles.bottomRow}>
@@ -119,7 +126,7 @@ const ServicesListScreen = () => {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <CommonHeader
                 title="Our Services"
                 leftElement="menu"
@@ -138,9 +145,19 @@ const ServicesListScreen = () => {
                     data={services}
                     renderItem={renderServiceItem}
                     keyExtractor={(item) => item.id}
-                    contentContainerStyle={services.length === 0 ? styles.emptyListContent : styles.listContent}
+                    contentContainerStyle={[
+                        services.length === 0 ? styles.emptyListContent : styles.listContent,
+                        {
+                            paddingLeft: Math.max(Spacing.m, insets.left + Spacing.s),
+                            paddingRight: Math.max(Spacing.m, insets.right + Spacing.s),
+                            paddingBottom: Math.max(Spacing.xs, insets.bottom + Spacing.xs),
+                        },
+                    ]}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={renderEmptyState}
+                    // Landscape mein 2 columns use karo
+                    numColumns={isLandscape ? 2 : 1}
+                    key={isLandscape ? 'landscape' : 'portrait'} // Force re-render on orientation change
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
@@ -151,9 +168,8 @@ const ServicesListScreen = () => {
                     }
                 />
             )}
-        </SafeAreaView>
+        </View>
     );
 };
 
 export default ServicesListScreen;
-

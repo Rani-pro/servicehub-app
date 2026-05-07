@@ -1,11 +1,11 @@
 import { BaseRepository } from '../../../core/baseRepository';
-import { Service, ServicesApiResponse, BookingRequest, BookingResponse } from './models/Service';
+import { BookingRequestPayload, BookingResponsePayload, ServiceModel } from '../../../shared/schema';
 
 export class ServicesRepository extends BaseRepository {
     private static instance: ServicesRepository;
 
     // Mock data for fallback/testing
-    private mockServices: Service[] = [
+    private mockServices: ServiceModel[] = [
         {
             id: '1',
             name: 'Mobile Repair',
@@ -83,7 +83,7 @@ export class ServicesRepository extends BaseRepository {
      * Fetch all services from the backend API
      * Endpoint: GET /services
      */
-    public async getServices(): Promise<Service[]> {
+    public async getServices(): Promise<ServiceModel[]> {
         try {
             // Real API call - uncomment when backend is ready
             // const response = await this.get<ServicesApiResponse>('/services');
@@ -104,7 +104,7 @@ export class ServicesRepository extends BaseRepository {
      * Fetch services by category
      * Endpoint: GET /services?category={category}
      */
-    public async getServicesByCategory(category: string): Promise<Service[]> {
+    public async getServicesByCategory(category: string): Promise<ServiceModel[]> {
         try {
             // Real API call - uncomment when backend is ready
             // const response = await this.get<ServicesApiResponse>(`/services?category=${category}`);
@@ -126,7 +126,7 @@ export class ServicesRepository extends BaseRepository {
      * Fetch a single service by ID
      * Endpoint: GET /services/{id}
      */
-    public async getServiceById(id: string): Promise<Service | undefined> {
+    public async getServiceById(id: string): Promise<ServiceModel | undefined> {
         try {
             // Real API call - uncomment when backend is ready
             // return await this.get<Service>(`/services/${id}`);
@@ -142,7 +142,7 @@ export class ServicesRepository extends BaseRepository {
      * Search services by name or description
      * Endpoint: GET /services/search?q={query}
      */
-    public async searchServices(query: string): Promise<Service[]> {
+    public async searchServices(query: string): Promise<ServiceModel[]> {
         try {
             // Real API call - uncomment when backend is ready
             // const response = await this.get<ServicesApiResponse>(`/services/search?q=${query}`);
@@ -152,7 +152,7 @@ export class ServicesRepository extends BaseRepository {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     const lowerQuery = query.toLowerCase();
-                    const filtered = this.mockServices.filter(s => 
+                    const filtered = this.mockServices.filter(s =>
                         s.name.toLowerCase().includes(lowerQuery) ||
                         s.description.toLowerCase().includes(lowerQuery)
                     );
@@ -169,7 +169,7 @@ export class ServicesRepository extends BaseRepository {
      * Endpoint: POST /bookings
      * On success the backend triggers an FCM push to the device.
      */
-    public async bookService(payload: BookingRequest): Promise<BookingResponse> {
+    public async bookService(payload: BookingRequestPayload): Promise<BookingResponsePayload> {
         try {
             // Real API call - uncomment when backend is ready
             // return await this.post<BookingResponse>('/bookings', payload);

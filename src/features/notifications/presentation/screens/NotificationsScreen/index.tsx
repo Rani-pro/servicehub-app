@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  Text,
   Alert,
+  FlatList,
   RefreshControl,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useAppSelector, useAppDispatch } from '../../../../../shared/hooks/reduxHooks';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import ResponsiveText from '../../../../../shared/components/ResponsiveText';
+import { useAppDispatch, useAppSelector } from '../../../../../shared/hooks/reduxHooks';
+import { useResponsive } from '../../../../../shared/hooks/useResponsive';
 import { useTheme } from '../../../../../shared/hooks/useTheme';
 import {
-  markAsRead,
-  markAllAsRead,
-  removeNotification,
   clearAllNotifications,
+  markAllAsRead,
+  markAsRead,
+  removeNotification,
 } from '../../../store/notificationSlice';
 import { Notification } from '../../../types';
 import { getStyles } from './style';
@@ -25,20 +27,23 @@ import { getStyles } from './style';
 const NotificationsScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
-  const styles = getStyles(colors);
-  
+  const { isLandscape, screenWidth } = useResponsive();
+  const insets = useSafeAreaInsets();
+
+  const styles = useMemo(
+    () => getStyles(colors, isLandscape),
+    [colors, isLandscape, screenWidth],
+  );
+
   const { notifications, unreadCount, isLoading } = useAppSelector(
-    state => state.notifications
+    state => state.notifications,
   );
 
   const handleNotificationPress = (notification: Notification) => {
     if (!notification.read) {
       dispatch(markAsRead(notification.id));
     }
-    
-    // Handle navigation based on notification data
     if (notification.data?.screen) {
-      // Add navigation logic here based on your app's needs
       console.log('Navigate to:', notification.data.screen);
     }
   };
@@ -60,7 +65,7 @@ const NotificationsScreen: React.FC = () => {
           style: 'destructive',
           onPress: () => dispatch(clearAllNotifications()),
         },
-      ]
+      ],
     );
   };
 
@@ -83,27 +88,19 @@ const NotificationsScreen: React.FC = () => {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'success':
-        return 'check-circle';
-      case 'warning':
-        return 'alert-circle';
-      case 'error':
-        return 'close-circle';
-      default:
-        return 'information';
+      case 'success': return 'check-circle';
+      case 'warning': return 'alert-circle';
+      case 'error': return 'close-circle';
+      default: return 'information';
     }
   };
 
   const getNotificationColor = (type: string) => {
     switch (type) {
-      case 'success':
-        return colors.success;
-      case 'warning':
-        return colors.danger;
-      case 'error':
-        return colors.danger;
-      default:
-        return colors.primary;
+      case 'success': return colors.success;
+      case 'warning': return colors.danger;
+      case 'error': return colors.danger;
+      default: return colors.primary;
     }
   };
 
@@ -132,7 +129,7 @@ const NotificationsScreen: React.FC = () => {
             <Icon name="close" size={16} color={colors.textSecondary} />
           </TouchableOpacity>
         </View>
-        
+
         <ResponsiveText
           variant="body"
           style={StyleSheet.flatten([
@@ -142,14 +139,14 @@ const NotificationsScreen: React.FC = () => {
         >
           {item.title}
         </ResponsiveText>
-        
+
         <ResponsiveText
           variant="bodySmall"
           style={styles.notificationBody}
         >
           {item.body}
         </ResponsiveText>
-        
+
         {!item.read && <View style={styles.unreadDot} />}
       </View>
     </TouchableOpacity>
@@ -169,16 +166,12 @@ const NotificationsScreen: React.FC = () => {
 
   const renderHeader = () => {
     if (notifications.length === 0) return null;
-    
     return (
       <View style={styles.headerActions}>
         <TouchableOpacity
           onPress={handleMarkAllAsRead}
           disabled={unreadCount === 0}
-          style={[
-            styles.actionButton,
-            unreadCount === 0 && styles.disabledButton,
-          ]}
+          style={[styles.actionButton, unreadCount === 0 && styles.disabledButton]}
         >
           <ResponsiveText
             variant="body"
@@ -190,11 +183,8 @@ const NotificationsScreen: React.FC = () => {
             Mark All Read
           </ResponsiveText>
         </TouchableOpacity>
-        
-        <TouchableOpacity
-          onPress={handleClearAll}
-          style={styles.actionButton}
-        >
+
+        <TouchableOpacity onPress={handleClearAll} style={styles.actionButton}>
           <ResponsiveText variant="body" style={styles.clearButtonText}>
             Clear All
           </ResponsiveText>
@@ -210,7 +200,7 @@ const NotificationsScreen: React.FC = () => {
         leftElement="back"
         backgroundColor="white"
       />
-      
+
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
@@ -220,15 +210,18 @@ const NotificationsScreen: React.FC = () => {
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={() => {
-              // Add refresh logic here if needed
-            }}
+            onRefresh={() => { }}
             colors={[colors.primary]}
           />
         }
         contentContainerStyle={[
           styles.listContainer,
           notifications.length === 0 && styles.emptyContainer,
+          {
+            paddingLeft: Math.max(16, insets.left + 8),
+            paddingRight: Math.max(16, insets.right + 8),
+            paddingBottom: Math.max(16, insets.bottom + 8),
+          },
         ]}
         showsVerticalScrollIndicator={false}
       />

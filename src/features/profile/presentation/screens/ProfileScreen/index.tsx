@@ -1,23 +1,31 @@
-import React, { useMemo } from 'react';
-import { View, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { useNavigation } from '@react-navigation/native';
+import { useMemo } from 'react';
+import { ScrollView, StatusBar, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { DrawerParamList } from '../../../../../navigation/navigationTypes';
-import { getStyles } from './style';
-import ResponsiveText from '../../../../../shared/components/ResponsiveText';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
-import { Spacing } from '../../../../../shared/theme/theme';
-import { useTheme } from '../../../../../shared/hooks/useTheme';
+import ResponsiveText from '../../../../../shared/components/ResponsiveText';
 import { useAppSelector } from '../../../../../shared/hooks/reduxHooks';
 import { useResponsive } from '../../../../../shared/hooks/useResponsive';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { Spacing } from '../../../../../shared/theme/theme';
+import { getStyles } from './style';
 
 const ProfileScreen = () => {
     const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
-    const { colors } = useTheme();
-    const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
+    const { colors, isDark } = useTheme();
+    const { isSmallDevice, isLandscape, screenWidth } = useResponsive();
+    const insets = useSafeAreaInsets();
+
+    // Re-compute styles on orientation change
+    const styles = useMemo(
+        () => getStyles(colors, Spacing, isLandscape),
+        [colors, isLandscape, screenWidth],
+    );
+
     const { user } = useAppSelector((state) => state.auth);
-    const { isSmallDevice } = useResponsive();
 
     const menuItems = [
         {
@@ -73,29 +81,26 @@ const ProfileScreen = () => {
             activeOpacity={0.7}
         >
             <View style={[styles.menuIcon, { backgroundColor: item.color + '15' }]}>
-                <Icon 
-                    name={item.icon} 
-                    size={isSmallDevice ? 20 : 24} 
+                <Icon
+                    name={item.icon}
+                    size={isSmallDevice || isLandscape ? 20 : 24}
                     color={item.color}
                 />
             </View>
             <View style={styles.menuContent}>
-                <ResponsiveText 
-                    variant={isSmallDevice ? "body" : "h4"} 
+                <ResponsiveText
+                    variant={isSmallDevice || isLandscape ? 'body' : 'h4'}
                     style={styles.menuText}
                 >
                     {item.title}
                 </ResponsiveText>
-                <ResponsiveText 
-                    variant="bodySmall" 
-                    style={styles.menuSubtext}
-                >
+                <ResponsiveText variant="bodySmall" style={styles.menuSubtext}>
                     {item.subtitle}
                 </ResponsiveText>
             </View>
-            <Icon 
-                name="chevron-right" 
-                size={20} 
+            <Icon
+                name="chevron-right"
+                size={20}
                 color={colors.textSecondary}
                 style={styles.chevron}
             />
@@ -104,41 +109,44 @@ const ProfileScreen = () => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-            
+            <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={colors.background} />
+
             {/* Header */}
-            <CommonHeader 
-                title="Profile" 
+            <CommonHeader
+                title="Profile"
                 leftElement="menu"
                 rightElement="more"
             />
 
-            <ScrollView 
-                style={styles.content} 
+            <ScrollView
+                style={styles.content}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: Spacing.xl }}
+                contentContainerStyle={{
+                    paddingBottom: Math.max(Spacing.s, insets.bottom + Spacing.xs),
+                    paddingLeft: insets.left,
+                    paddingRight: insets.right,
+                }}
             >
-                {/* Profile Card */}
+                {/* Profile Card - landscape mein horizontal layout */}
                 <View style={styles.profileCard}>
                     <View style={styles.avatar}>
-                        <Icon 
-                            name="account" 
-                            size={isSmallDevice ? 40 : 50} 
-                            color={colors.primary} 
+                        <Icon
+                            name="account"
+                            size={isLandscape ? 30 : (isSmallDevice ? 40 : 50)}
+                            color={colors.primary}
                         />
                     </View>
-                    <ResponsiveText 
-                        variant={isSmallDevice ? "h3" : "h2"} 
-                        style={styles.userName}
-                    >
-                        {getUserDisplayName()}
-                    </ResponsiveText>
-                    <ResponsiveText 
-                        variant="body" 
-                        style={styles.userEmail}
-                    >
-                        {getUserEmail()}
-                    </ResponsiveText>
+                    <View style={styles.profileInfo}>
+                        <ResponsiveText
+                            variant={isLandscape ? 'h4' : (isSmallDevice ? 'h3' : 'h2')}
+                            style={styles.userName}
+                        >
+                            {getUserDisplayName()}
+                        </ResponsiveText>
+                        <ResponsiveText variant="body" style={styles.userEmail}>
+                            {getUserEmail()}
+                        </ResponsiveText>
+                    </View>
                 </View>
 
                 {/* Stats */}
@@ -173,10 +181,7 @@ const ProfileScreen = () => {
 
                 {/* Menu Section */}
                 <View style={styles.menuSection}>
-                    <ResponsiveText 
-                        variant="h4" 
-                        style={styles.sectionTitle}
-                    >
+                    <ResponsiveText variant="h4" style={styles.sectionTitle}>
                         Account
                     </ResponsiveText>
                     {menuItems.map(renderMenuItem)}

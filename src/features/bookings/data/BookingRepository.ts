@@ -1,5 +1,5 @@
 import { BaseRepository } from '../../../core/baseRepository';
-import { BookingRequest, BookingResponse } from './models/Booking';
+import { BookingRequestPayload, BookingResponsePayload } from '../../../shared/schema';
 
 /**
  * BookingRepository
@@ -19,7 +19,7 @@ export class BookingRepository extends BaseRepository {
   /**
    * Create a new booking.
    */
-  async createBooking(payload: BookingRequest): Promise<BookingResponse> {
-    return this.post<BookingResponse>('/bookings', payload);
+  async createBooking(payload: BookingRequestPayload): Promise<BookingResponsePayload> {
+    return this.post<BookingResponsePayload>('/bookings', payload);
   }
 }
