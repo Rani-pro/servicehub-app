@@ -33,10 +33,15 @@ export default function Index() {
 }
 `;
 
-const layoutContent = `import { Stack } from "expo-router";
+const layoutContent = `import React from "react";
+import { View, Text } from "react-native";
 
 export default function RootLayout() {
-  return <Stack />;
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>App entry point</Text>
+    </View>
+  );
 }
 `;
 
