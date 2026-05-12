@@ -80,11 +80,11 @@ export const getButtonHeight = (): number => {
   
   switch (screenSize) {
     case SCREEN_SIZES.SMALL:
-      return responsiveVerticalScale(48); // Consistent with input height
+      return responsiveVerticalScale(40);
     case SCREEN_SIZES.LARGE:
-      return responsiveVerticalScale(60); // Slightly larger for better presence
+      return responsiveVerticalScale(50);
     default:
-      return responsiveVerticalScale(54); // Better proportion
+      return responsiveVerticalScale(45);
   }
 };
 
@@ -93,11 +93,11 @@ export const getInputHeight = (): number => {
   
   switch (screenSize) {
     case SCREEN_SIZES.SMALL:
-      return responsiveVerticalScale(48); // Increased for better touch target
+      return responsiveVerticalScale(40);
     case SCREEN_SIZES.LARGE:
-      return responsiveVerticalScale(56); // Increased for better proportions
+      return responsiveVerticalScale(48);
     default:
-      return responsiveVerticalScale(52); // Increased for better UX
+      return responsiveVerticalScale(44);
   }
 };
 

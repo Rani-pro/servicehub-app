@@ -14,14 +14,14 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { launchImageLibrary, launchCamera, ImagePickerResponse, MediaType } from 'react-native-image-picker';
+import messaging from '@react-native-firebase/messaging';
 
 import { Spacing } from '../../../../../shared/theme/theme';
-import Button from '../../../../../shared/components/Button';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import ResponsiveText from '../../../../../shared/components/ResponsiveText';
 import { logout as logoutAction } from '../../../../auth/store/authSlice';
 import { settingsRepository } from '../../../data/SettingsRepository';
-import { setLoading, setError, setTheme } from '../../../store/settingsSlice';
+import { setLoading, setError, setTheme, setPushNotificationsEnabled } from '../../../store/settingsSlice';
 import { getStyles } from './style';
 import { useTheme } from '../../../../../shared/hooks/useTheme';
 import { useAppSelector } from '../../../../../shared/hooks/reduxHooks';
@@ -38,9 +38,35 @@ const SettingScreen = () => {
 
     const { isLoading } = useAppSelector((state) => state.settings);
     const { user } = useAppSelector((state) => state.auth);
+    const pushNotificationsEnabled = useAppSelector((state) => state.settings.pushNotificationsEnabled);
 
     const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
     const [photoUploading, setPhotoUploading] = useState(false);
+
+    const handleTogglePushNotifications = async (value: boolean) => {
+        if (value) {
+            try {
+                const authStatus = await messaging().requestPermission();
+                const enabled =
+                    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+                    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+                if (enabled) {
+                    dispatch(setPushNotificationsEnabled(true));
+                } else {
+                    Alert.alert(
+                        'Permission Denied',
+                        'Please enable notifications from your device settings to receive push notifications.',
+                        [{ text: 'OK' }]
+                    );
+                }
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+            }
+        } else {
+            dispatch(setPushNotificationsEnabled(false));
+        }
+    };
 
     const handleLogout = async () => {
         Alert.alert(
@@ -92,13 +118,19 @@ const SettingScreen = () => {
     const handleCrashlyticsTest = () => {
         Alert.alert(
             'Crashlytics Test',
-            'This will crash the app to test Crashlytics reporting. Are you sure?',
+            'App crash hoga aur data Firebase console me dikhega. Continue?',
             [
                 { text: 'Cancel', style: 'cancel' },
                 {
                     text: 'Test Crash',
                     style: 'destructive',
-                    onPress: () => crashlyticsRepository.crash(),
+                    onPress: async () => {
+                        // Log breadcrumb before crash so it shows in console
+                        crashlyticsRepository.log('Manual test crash triggered from Settings');
+                        await crashlyticsRepository.setUserId('test-user-crash');
+                        // Native crash — this is what Crashlytics actually captures
+                        crashlyticsRepository.testNativeCrash();
+                    },
                 },
             ]
         );
@@ -154,7 +186,7 @@ const SettingScreen = () => {
             subtitle: 'English (United States)',
             icon: 'translate',
             color: '#06B6D4',
-            onPress: () => {},
+            onPress: () => { },
         },
     ];
 
@@ -167,11 +199,25 @@ const SettingScreen = () => {
             onPress: handleChangePassword,
         },
         {
-            title: 'Notifications',
-            subtitle: 'Manage your alerts',
-            icon: 'bell-outline',
+            title: 'Push Notifications',
+            subtitle: pushNotificationsEnabled ? 'Notifications are enabled' : 'Notifications are disabled',
+            icon: pushNotificationsEnabled ? 'bell-ring-outline' : 'bell-off-outline',
             color: '#F59E0B',
-            onPress: () => {},
+            rightElement: (
+                <Switch
+                    value={pushNotificationsEnabled}
+                    onValueChange={handleTogglePushNotifications}
+                    trackColor={{ false: '#767577', true: colors.primary }}
+                    thumbColor={pushNotificationsEnabled ? colors.white : '#f4f3f4'}
+                />
+            ),
+        },
+        {
+            title: 'Sign Out',
+            subtitle: 'Logout from your account',
+            icon: 'logout',
+            color: '#EF4444',
+            onPress: handleLogout,
         },
     ];
 
@@ -181,21 +227,21 @@ const SettingScreen = () => {
             subtitle: 'Read our privacy policy',
             icon: 'shield-outline',
             color: '#8B5CF6',
-            onPress: () => {},
+            onPress: () => { },
         },
         {
             title: 'Terms of Service',
             subtitle: 'Read our terms of service',
             icon: 'file-document-outline',
             color: '#06B6D4',
-            onPress: () => {},
+            onPress: () => { },
         },
         {
             title: 'Help & Support',
             subtitle: 'Get help and contact support',
             icon: 'help-circle-outline',
             color: '#10B981',
-            onPress: () => {},
+            onPress: () => navigation.navigate('Support' as never),
         },
     ];
 
@@ -238,7 +284,7 @@ const SettingScreen = () => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+            <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
 
             <CommonHeader
                 title="Settings"
@@ -249,7 +295,7 @@ const SettingScreen = () => {
             <ScrollView
                 style={styles.content}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: Spacing.xl }}
+                contentContainerStyle={{ paddingBottom: Spacing.m }}
             >
                 {/* Profile Card */}
                 <View style={styles.profileCard}>
@@ -327,16 +373,7 @@ const SettingScreen = () => {
                     </View>
                 )}
 
-                {/* Logout */}
-                <View style={styles.logoutButton}>
-                    <Button
-                        title="Sign Out"
-                        onPress={handleLogout}
-                        variant="danger"
-                        loading={isLoading}
-                        size="small"
-                    />
-                </View>
+
             </ScrollView>
         </View>
     );

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Spacing, Typography } from '../../../../../shared/theme/theme';
 
 export const getStyles = (colors: any) =>
   StyleSheet.create({
@@ -7,7 +8,7 @@ export const getStyles = (colors: any) =>
       backgroundColor: colors.background,
     },
     listContainer: {
-      padding: 16,
+      padding: Spacing.m,
     },
     emptyContainer: {
       flex: 1,
@@ -16,12 +17,12 @@ export const getStyles = (colors: any) =>
     headerActions: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      marginBottom: 16,
-      paddingHorizontal: 4,
+      marginBottom: Spacing.m,
+      paddingHorizontal: Spacing.xs,
     },
     actionButton: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
+      paddingHorizontal: Spacing.m,
+      paddingVertical: Spacing.s,
       borderRadius: 8,
       backgroundColor: colors.secondaryBackground,
     },
@@ -29,21 +30,24 @@ export const getStyles = (colors: any) =>
       opacity: 0.5,
     },
     actionButtonText: {
+      ...Typography.bodySmall,
       color: colors.primary,
       fontWeight: '600',
     },
     disabledText: {
+      ...Typography.bodySmall,
       color: colors.textSecondary,
     },
     clearButtonText: {
+      ...Typography.bodySmall,
       color: colors.danger,
       fontWeight: '600',
     },
     notificationItem: {
       backgroundColor: colors.secondaryBackground,
       borderRadius: 12,
-      marginBottom: 12,
-      padding: 16,
+      marginBottom: Spacing.s,
+      padding: Spacing.m,
       borderWidth: 1,
       borderColor: colors.border,
     },
@@ -57,28 +61,29 @@ export const getStyles = (colors: any) =>
     notificationHeader: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 8,
+      marginBottom: Spacing.s,
     },
     notificationTime: {
-      fontSize: 12,
+      ...Typography.caption,
       color: colors.textSecondary,
-      marginLeft: 8,
+      marginLeft: Spacing.s,
       flex: 1,
     },
     deleteButton: {
-      padding: 4,
+      padding: Spacing.xs,
     },
     notificationTitle: {
+      ...Typography.body,
       fontWeight: '600',
-      marginBottom: 4,
+      marginBottom: Spacing.xs,
       color: colors.text,
     },
     unreadText: {
       fontWeight: '700',
     },
     notificationBody: {
+      ...Typography.bodySmall,
       color: colors.textSecondary,
-      lineHeight: 20,
     },
     unreadDot: {
       position: 'absolute',
@@ -92,16 +97,18 @@ export const getStyles = (colors: any) =>
     emptyState: {
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: 64,
+      paddingVertical: Spacing.xxl,
     },
     emptyTitle: {
-      marginTop: 16,
-      marginBottom: 8,
+      ...Typography.h4,
+      marginTop: Spacing.m,
+      marginBottom: Spacing.s,
       color: colors.text,
     },
     emptyMessage: {
+      ...Typography.body,
       textAlign: 'center',
       color: colors.textSecondary,
-      paddingHorizontal: 32,
+      paddingHorizontal: Spacing.xl,
     },
   });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, SafeAreaView, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native'; import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 const Icon = MaterialIcon as any;
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +13,9 @@ import { getStyles } from './style';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import { Spacing } from '../../../../../shared/theme/theme';
 import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { useResponsive } from '../../../../../shared/hooks/useResponsive';
 import { ApiError } from '../../../../../core/api/apiErrorHandler';
+import Button from '../../../../../shared/components/Button';
 
 type NavigationProp = CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList, 'Services'>,
@@ -24,7 +26,9 @@ const ServicesListScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const { colors } = useTheme();
     const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
-    
+    const { isLandscape } = useResponsive();
+    const insets = useSafeAreaInsets();
+
     const [services, setServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -40,12 +44,12 @@ const ServicesListScreen = () => {
                 setLoading(true);
             }
             setError(null);
-            
+
             const data = await ServicesRepository.getInstance().getServices();
             setServices(data);
         } catch (err) {
-            const errorMessage = err instanceof ApiError 
-                ? err.message 
+            const errorMessage = err instanceof ApiError
+                ? err.message
                 : 'Failed to load services. Please try again.';
             setError(errorMessage);
             console.error('Error loading services:', err);
@@ -112,14 +116,16 @@ const ServicesListScreen = () => {
             <Icon name="alert-circle-outline" size={64} color={colors.danger} />
             <Text style={styles.errorTitle}>Oops! Something went wrong</Text>
             <Text style={styles.errorDescription}>{error}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={() => loadServices()}>
-                <Text style={styles.retryButtonText}>Retry</Text>
-            </TouchableOpacity>
+            <Button
+                title="Retry"
+                onPress={() => loadServices()}
+                variant="primary"
+            />
         </View>
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
             <CommonHeader
                 title="Our Services"
                 leftElement="menu"
@@ -138,7 +144,13 @@ const ServicesListScreen = () => {
                     data={services}
                     renderItem={renderServiceItem}
                     keyExtractor={(item) => item.id}
-                    contentContainerStyle={services.length === 0 ? styles.emptyListContent : styles.listContent}
+                    contentContainerStyle={[
+                        services.length === 0 ? styles.emptyListContent : styles.listContent,
+                        isLandscape && {
+                            paddingLeft: (insets.left || 0) + Spacing.m,
+                            paddingRight: (insets.right || 0) + Spacing.m,
+                        },
+                    ]}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={renderEmptyState}
                     refreshControl={

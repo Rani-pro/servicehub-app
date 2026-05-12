@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { ComponentSizes, Shadows } from '../../../../../shared/theme/theme';
+import { ComponentSizes, Shadows, Typography } from '../../../../../shared/theme/theme';
 import { responsiveScale } from '../../../../../shared/utils/responsive';
 
 export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
@@ -53,14 +53,13 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         ...Shadows.small,
     },
     userName: {
-        fontSize: responsiveScale(24),
-        fontWeight: '600',
+        ...Typography.h3,
         color: colors.text,
         marginBottom: Spacing.xs,
         textAlign: 'center',
     },
     userEmail: {
-        fontSize: responsiveScale(16),
+        ...Typography.body,
         color: colors.textSecondary,
         textAlign: 'center',
     },
@@ -69,8 +68,7 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         marginBottom: Spacing.s,
     },
     sectionTitle: {
-        fontSize: responsiveScale(18),
-        fontWeight: '600',
+        ...Typography.h4,
         color: colors.text,
         marginBottom: Spacing.m,
     },
@@ -95,20 +93,16 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         flex: 1,
     },
     menuText: {
-        fontSize: responsiveScale(16),
+        ...Typography.body,
         color: colors.text,
         fontWeight: '500',
         marginBottom: Spacing.xs / 2,
     },
     menuSubtext: {
-        fontSize: responsiveScale(14),
+        ...Typography.bodySmall,
         color: colors.textSecondary,
     },
     chevron: {
         marginLeft: Spacing.s,
-    },
-    logoutButton: {
-        marginTop: Spacing.l,
-        marginHorizontal: Spacing.xs,
     },
 });

@@ -18,6 +18,11 @@ import ResponsiveText from '../shared/components/ResponsiveText';
 import BottomTabNavigator from './BottomTabNavigator';
 import SettingScreen from '../features/settings/presentation/screens/SettingScreen';
 import ProfileScreen from '../features/profile/presentation/screens/ProfileScreen';
+import NotesScreen from '../features/notes/presentation/screens/NotesScreen';
+import ServicesListScreen from '../features/services/presentation/screens/ServicesListScreen';
+import SupportScreen from '../features/support/presentation/screens/SupportScreen';
+import AboutScreen from '../features/about/presentation/screens/AboutScreen';
+import FeedbackScreen from '../features/support/presentation/screens/FeedbackScreen';
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -207,6 +212,56 @@ const DrawerNavigator = () => {
                     drawerLabel: 'Settings',
                     drawerIcon: ({ color, size }) => (
                         <Icon name="cog" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Notes"
+                component={NotesScreen}
+                options={{
+                    drawerLabel: 'My Notes',
+                    drawerIcon: ({ color, size }) => (
+                        <Icon name="note-text" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Services"
+                component={ServicesListScreen}
+                options={{
+                    drawerLabel: 'Services',
+                    drawerIcon: ({ color, size }) => (
+                        <Icon name="tools" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Support"
+                component={SupportScreen}
+                options={{
+                    drawerLabel: 'Support',
+                    drawerIcon: ({ color, size }) => (
+                        <Icon name="help-circle" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="About"
+                component={AboutScreen}
+                options={{
+                    drawerLabel: 'About Us',
+                    drawerIcon: ({ color, size }) => (
+                        <Icon name="information" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Feedback"
+                component={FeedbackScreen}
+                options={{
+                    drawerLabel: 'Feedback',
+                    drawerIcon: ({ color, size }) => (
+                        <Icon name="message-text" size={size} color={color} />
                     ),
                 }}
             />

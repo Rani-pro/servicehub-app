@@ -1,51 +1,35 @@
 import { StyleSheet } from 'react-native';
-import { Colors, Spacing } from '../../../../../shared/theme/theme';
+import { Spacing } from '../../../../../shared/theme/theme';
 
-export const styles = StyleSheet.create({
+export const getStyles = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: Spacing.m,
-        borderBottomWidth: 1,
-        borderBottomColor: Colors.border,
-    },
-    backButton: {
-        padding: Spacing.s,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: Colors.text,
-        marginLeft: Spacing.s,
+        backgroundColor: colors.background,
     },
     content: {
         padding: Spacing.m,
     },
     infoCard: {
-        backgroundColor: '#F0FDF4',
+        backgroundColor: colors.primary + '15',
         padding: Spacing.m,
         borderRadius: 12,
         alignItems: 'center',
         marginBottom: Spacing.l,
         borderWidth: 1,
-        borderColor: '#DCFCE7',
+        borderColor: colors.primary + '30',
     },
     infoText: {
-        color: '#166534',
+        color: colors.text,
         textAlign: 'center',
         marginTop: Spacing.s,
         lineHeight: 20,
     },
     form: {
-        backgroundColor: Colors.white,
+        backgroundColor: colors.secondaryBackground,
         padding: Spacing.m,
         borderRadius: 16,
         elevation: 2,
-        shadowColor: '#000',
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 10,

@@ -26,7 +26,7 @@ const NotificationsScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const { colors } = useTheme();
   const styles = getStyles(colors);
-  
+
   const { notifications, unreadCount, isLoading } = useAppSelector(
     state => state.notifications
   );
@@ -35,7 +35,7 @@ const NotificationsScreen: React.FC = () => {
     if (!notification.read) {
       dispatch(markAsRead(notification.id));
     }
-    
+
     // Handle navigation based on notification data
     if (notification.data?.screen) {
       // Add navigation logic here based on your app's needs
@@ -132,7 +132,7 @@ const NotificationsScreen: React.FC = () => {
             <Icon name="close" size={16} color={colors.textSecondary} />
           </TouchableOpacity>
         </View>
-        
+
         <ResponsiveText
           variant="body"
           style={StyleSheet.flatten([
@@ -142,14 +142,14 @@ const NotificationsScreen: React.FC = () => {
         >
           {item.title}
         </ResponsiveText>
-        
+
         <ResponsiveText
           variant="bodySmall"
           style={styles.notificationBody}
         >
           {item.body}
         </ResponsiveText>
-        
+
         {!item.read && <View style={styles.unreadDot} />}
       </View>
     </TouchableOpacity>
@@ -169,7 +169,7 @@ const NotificationsScreen: React.FC = () => {
 
   const renderHeader = () => {
     if (notifications.length === 0) return null;
-    
+
     return (
       <View style={styles.headerActions}>
         <TouchableOpacity
@@ -190,7 +190,7 @@ const NotificationsScreen: React.FC = () => {
             Mark All Read
           </ResponsiveText>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           onPress={handleClearAll}
           style={styles.actionButton}
@@ -210,7 +210,7 @@ const NotificationsScreen: React.FC = () => {
         leftElement="back"
         backgroundColor="white"
       />
-      
+
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}

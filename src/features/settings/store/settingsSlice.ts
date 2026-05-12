@@ -6,6 +6,7 @@ const initialState: SettingsState = {
     isLoading: false,
     error: null,
     theme: 'light',
+    pushNotificationsEnabled: false,
 };
 
 const settingsSlice = createSlice({
@@ -22,9 +23,12 @@ const settingsSlice = createSlice({
         setTheme: (state, action: PayloadAction<ThemeMode>) => {
             state.theme = action.payload;
         },
+        setPushNotificationsEnabled: (state, action: PayloadAction<boolean>) => {
+            state.pushNotificationsEnabled = action.payload;
+        },
     },
 });
 
-export const { setLoading, setError, setTheme } = settingsSlice.actions;
+export const { setLoading, setError, setTheme, setPushNotificationsEnabled } = settingsSlice.actions;
 export default settingsSlice.reducer;
 

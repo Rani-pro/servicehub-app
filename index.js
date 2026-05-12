@@ -18,9 +18,12 @@ if (!firebase.apps.length) {
 }
 
 // Import other Firebase modules after app initialization
-import '@react-native-firebase/crashlytics';
+import crashlytics from '@react-native-firebase/crashlytics';
 import '@react-native-firebase/messaging';
 import '@react-native-firebase/analytics';
 import '@react-native-firebase/auth';
+
+// Enable Crashlytics collection (required for debug builds to report crashes)
+crashlytics().setCrashlyticsCollectionEnabled(true);
 
 AppRegistry.registerComponent(appName, () => App);

@@ -1,5 +1,5 @@
 import { StyleSheet, Platform, StatusBar as RNStatusBar } from 'react-native';
-import { Colors, Spacing } from '../../../../../shared/theme/theme';
+import { Colors, Spacing, Typography } from '../../../../../shared/theme/theme';
 
 export const styles = StyleSheet.create({
     safeArea: {
@@ -11,8 +11,7 @@ export const styles = StyleSheet.create({
         padding: Spacing.m,
     },
     header: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        ...Typography.h3,
         color: Colors.primary,
     },
     headerContainer: {
@@ -29,13 +28,12 @@ export const styles = StyleSheet.create({
         marginBottom: Spacing.xl,
     },
     sectionTitle: {
-        fontSize: 18,
-        fontWeight: '600',
+        ...Typography.h4,
         color: Colors.text,
         marginBottom: Spacing.s,
     },
     exampleContainer: {
-        backgroundColor: Colors.surface,
+        backgroundColor: Colors.secondaryBackground,
         padding: Spacing.m,
         borderRadius: 8,
         marginBottom: Spacing.m,
@@ -43,7 +41,7 @@ export const styles = StyleSheet.create({
         borderColor: Colors.border,
     },
     exampleTitle: {
-        fontSize: 16,
+        ...Typography.body,
         fontWeight: '500',
         color: Colors.text,
         marginBottom: Spacing.s,
@@ -57,57 +55,18 @@ export const styles = StyleSheet.create({
         marginVertical: Spacing.xs,
     },
     buttonText: {
+        ...Typography.bodySmall,
         color: Colors.white,
-        fontSize: 14,
         fontWeight: '500',
     },
     hiddenText: {
-        fontSize: 14,
+        ...Typography.bodySmall,
         color: Colors.success,
         marginTop: Spacing.s,
         fontStyle: 'italic',
     },
     listItem: {
-        fontSize: 14,
-        color: Colors.text,
-        marginTop: Spacing.xs,
-        paddingLeft: Spacing.s,
-    },
-    exampleContainer: {
-        backgroundColor: Colors.surface,
-        padding: Spacing.m,
-        borderRadius: 8,
-        marginBottom: Spacing.m,
-        borderWidth: 1,
-        borderColor: Colors.border,
-    },
-    exampleTitle: {
-        fontSize: 16,
-        fontWeight: '500',
-        color: Colors.text,
-        marginBottom: Spacing.s,
-    },
-    button: {
-        backgroundColor: Colors.primary,
-        paddingVertical: Spacing.s,
-        paddingHorizontal: Spacing.m,
-        borderRadius: 6,
-        alignItems: 'center',
-        marginVertical: Spacing.xs,
-    },
-    buttonText: {
-        color: Colors.white,
-        fontSize: 14,
-        fontWeight: '500',
-    },
-    hiddenText: {
-        fontSize: 14,
-        color: Colors.success,
-        marginTop: Spacing.s,
-        fontStyle: 'italic',
-    },
-    listItem: {
-        fontSize: 14,
+        ...Typography.bodySmall,
         color: Colors.text,
         marginTop: Spacing.xs,
         paddingLeft: Spacing.s,

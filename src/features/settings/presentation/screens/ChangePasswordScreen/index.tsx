@@ -11,15 +11,17 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Colors, Spacing } from '../../../../../shared/theme/theme';
 import Input from '../../../../../shared/components/Input';
 import Button from '../../../../../shared/components/Button';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import { settingsRepository } from '../../../data/SettingsRepository';
-import { styles } from './style';
+import { getStyles } from './style';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
 
 const ChangePasswordScreen = () => {
     const navigation = useNavigation();
+    const { colors } = useTheme();
+    const styles = getStyles(colors);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -69,7 +71,7 @@ const ChangePasswordScreen = () => {
             >
                 <ScrollView contentContainerStyle={styles.content}>
                     <View style={styles.infoCard}>
-                        <Icon name="shield-lock-outline" size={40} color={Colors.primary} />
+                        <Icon name="shield-lock-outline" size={40} color={colors.primary} />
                         <Text style={styles.infoText}>
                             Choose a strong password with at least 6 characters to keep your account secure.
                         </Text>

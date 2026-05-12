@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { ComponentSizes, Shadows } from '../../../../../shared/theme/theme';
+import { ComponentSizes, Shadows, Typography } from '../../../../../shared/theme/theme';
 import { responsiveScale } from '../../../../../shared/utils/responsive';
 
 export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
@@ -29,14 +29,13 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         marginBottom: Spacing.m,
     },
     userName: {
-        fontSize: responsiveScale(24),
-        fontWeight: '600',
+        ...Typography.h3,
         color: colors.text,
         marginBottom: Spacing.xs,
         textAlign: 'center',
     },
     userEmail: {
-        fontSize: responsiveScale(16),
+        ...Typography.body,
         color: colors.textSecondary,
         textAlign: 'center',
     },
@@ -64,13 +63,13 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         flex: 1,
     },
     menuText: {
-        fontSize: responsiveScale(16),
+        ...Typography.body,
         color: colors.text,
         fontWeight: '500',
         marginBottom: Spacing.xs / 2,
     },
     menuSubtext: {
-        fontSize: responsiveScale(14),
+        ...Typography.bodySmall,
         color: colors.textSecondary,
     },
     chevron: {
@@ -82,31 +81,29 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         backgroundColor: colors.secondaryBackground,
         borderRadius: ComponentSizes.card.borderRadius,
         padding: Spacing.m,
-        marginBottom: Spacing.l,
+        marginBottom: Spacing.m,
         ...Shadows.small,
     },
     statItem: {
         alignItems: 'center',
+        justifyContent: 'center',
         flex: 1,
         paddingHorizontal: Spacing.xs,
     },
     statValue: {
-        fontSize: responsiveScale(20),
-        fontWeight: '600',
+        ...Typography.h4,
         color: colors.primary,
         marginBottom: Spacing.xs / 2,
     },
     statNumber: {
-        fontSize: responsiveScale(20),
-        fontWeight: '600',
+        ...Typography.h4,
         color: colors.primary,
         marginBottom: Spacing.xs / 2,
     },
     statLabel: {
-        fontSize: responsiveScale(11),
+        ...Typography.caption,
         color: colors.textSecondary,
         textAlign: 'center',
-        lineHeight: responsiveScale(14),
     },
     statDivider: {
         width: 1,
@@ -114,8 +111,7 @@ export const getStyles = (colors: any, Spacing: any) => StyleSheet.create({
         backgroundColor: colors.border,
     },
     sectionTitle: {
-        fontSize: responsiveScale(18),
-        fontWeight: '600',
+        ...Typography.h4,
         color: colors.text,
         marginBottom: Spacing.m,
     },

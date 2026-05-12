@@ -9,6 +9,8 @@ import { crashlyticsRepository } from './src/core/crashlyticsRepository';
 import { messagingRepository } from './src/core/messagingRepository';
 import { notificationService } from './src/features/notifications/services/notificationService';
 import { LightColors, DarkColors } from './src/shared/theme/theme';
+import { databaseService } from './src/core/database/database';
+import { securityService } from './src/core/security/securityService';
 
 // Import Crashlytics test utilities for development
 import './src/utils/CrashlyticsTestUtils';
@@ -69,6 +71,14 @@ const Main = () => {
     initCrashlytics();
     const unsubscribeMessaging = initMessaging();
 
+    // Perform security checks (Root/Jailbreak)
+    securityService.performSecurityChecks();
+
+    // Initialise SQLite database (creates tables if not exist)
+    databaseService.init().catch(e =>
+      console.error('[App] DB init failed', e),
+    );
+
     return () => {
       unsubscribeMessaging.then((unsub) => unsub?.());
     };
@@ -78,8 +88,8 @@ const Main = () => {
     <>
       <AppNavigator />
       <StatusBar
-        barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={theme === 'dark' ? DarkColors.background : LightColors.background}
+        barStyle="light-content"
+        backgroundColor={theme === 'dark' ? DarkColors.background : LightColors.primary}
       />
     </>
   );

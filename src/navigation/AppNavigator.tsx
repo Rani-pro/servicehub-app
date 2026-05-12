@@ -10,6 +10,10 @@ import ServiceDetailScreen from '../features/services/presentation/screens/Servi
 import ChangePasswordScreen from '../features/settings/presentation/screens/ChangePasswordScreen';
 import NotificationsScreen from '../features/notifications/presentation/screens/NotificationsScreen';
 import BookingConfirmationScreen from '../features/bookings/presentation/screens/BookingConfirmationScreen';
+import EditProfileScreen from '../features/profile/presentation/screens/EditProfileScreen';
+import SupportScreen from '../features/support/presentation/screens/SupportScreen';
+import AboutScreen from '../features/about/presentation/screens/AboutScreen';
+import FeedbackScreen from '../features/support/presentation/screens/FeedbackScreen';
 // Navigators
 import DrawerNavigator from './DrawerNavigator';
 import { RootState } from '../store/store';
@@ -57,6 +61,10 @@ const AppNavigator = () => {
                         <Stack.Screen name="BookingConfirmation" component={BookingConfirmationScreen} />
                         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
                         <Stack.Screen name="Notifications" component={NotificationsScreen} />
+                        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                        <Stack.Screen name="Support" component={SupportScreen} />
+                        <Stack.Screen name="About" component={AboutScreen} />
+                        <Stack.Screen name="Feedback" component={FeedbackScreen} />
                     </>
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen} />

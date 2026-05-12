@@ -121,6 +121,8 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            // Enable Crashlytics for debug builds
+            manifestPlaceholders = [enableCrashlytics: "true"]
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -128,6 +130,12 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            // Enable Crashlytics for release builds
+            manifestPlaceholders = [enableCrashlytics: "true"]
+            // Ensure Crashlytics mapping file is uploaded
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+            }
         }
     }
 }

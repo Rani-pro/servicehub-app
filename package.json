@@ -2,24 +2,21 @@
   "name": "SERVICEHUB",
   "version": "0.0.1",
   "private": true,
-  "workspaces": {
-    "nohoist": [
-      "backend",
-      "backend/**"
-    ]
-  },
   "scripts": {
-    "android": "react-native run-android",
-    "android:staging": "cd android && ./gradlew installStagingDebug && adb shell am start -n com.servicehub.staging/com.servicehub.MainActivity && cd .. && npx react-native start",
-    "android:prod": "cd android && ./gradlew installProductionDebug && cd .. && npx react-native start",
-    "android:staging:release": "cd android && ./gradlew installStagingRelease",
-    "android:prod:release": "cd android && ./gradlew installProductionRelease",
+    "android": "react-native run-android --mode stagingDebug --appId com.servicehub.staging",
+    "android:staging": "react-native run-android --mode stagingDebug --appId com.servicehub.staging",
+    "android:prod": "react-native run-android --mode productionDebug --appId com.servicehub",
+    "android:staging:release": "react-native run-android --mode stagingRelease --appId com.servicehub.staging",
+    "android:prod:release": "react-native run-android --mode productionRelease --appId com.servicehub",
     "ios": "react-native run-ios",
+    "ios:staging": "react-native run-ios --scheme SERVICEHUB --mode Debug",
+    "ios:prod": "react-native run-ios --scheme SERVICEHUB --mode Release",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
+    "@op-engineering/op-sqlite": "^15.2.12",
     "@react-native-async-storage/async-storage": "^3.0.2",
     "@react-native-community/netinfo": "^12.0.1",
     "@react-native-firebase/analytics": "^24.0.0",
@@ -35,10 +32,12 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@types/react-redux": "^7.1.34",
     "axios": "^1.16.0",
+    "jail-monkey": "^3.0.0",
     "react": "19.2.3",
     "react-native": "0.84.1",
     "react-native-gesture-handler": "^2.31.1",
     "react-native-image-picker": "^8.2.1",
+    "react-native-keychain": "^10.0.0",
     "react-native-reanimated": "^4.3.0",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^5.5.2",
@@ -71,5 +70,8 @@
   },
   "engines": {
     "node": ">= 22.11.0"
+  },
+  "resolutions": {
+    "semver": "^7.7.3"
   }
 }

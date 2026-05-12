@@ -1,31 +1,33 @@
 import { StyleSheet } from 'react-native';
-import { LightColors, Spacing, ComponentSizes, Shadows } from '../../../../../shared/theme/theme';
+import { Spacing, ComponentSizes } from '../../../../../shared/theme/theme';
 import { responsiveWidth, responsiveHeight } from '../../../../../shared/utils/responsive';
 
-export const styles = StyleSheet.create({
+export const getStyles = (colors: any) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: LightColors.background,
+        backgroundColor: colors.background,
     },
     scrollContainer: {
         flexGrow: 1,
-        paddingHorizontal: responsiveWidth(6), // 6% of screen width
-        paddingVertical: Spacing.l,
+        paddingHorizontal: responsiveWidth(6),
+        paddingVertical: Spacing.m,
         justifyContent: 'center',
         minHeight: responsiveHeight(100),
     },
     header: {
-        marginBottom: Spacing.xl,
+        marginBottom: Spacing.l,
         alignItems: 'center',
+        minHeight: 100,
+        justifyContent: 'center',
     },
     title: {
-        color: LightColors.primary,
+        color: colors.primary,
         marginBottom: Spacing.xs,
     },
     toggleContainer: {
         flexDirection: 'row',
-        marginBottom: Spacing.l,
-        backgroundColor: LightColors.secondaryBackground,
+        marginBottom: Spacing.m,
+        backgroundColor: colors.secondaryBackground,
         borderRadius: ComponentSizes.button.borderRadius,
         padding: 4,
     },
@@ -36,14 +38,14 @@ export const styles = StyleSheet.create({
         borderRadius: ComponentSizes.button.borderRadius - 2,
     },
     toggleButtonActive: {
-        backgroundColor: LightColors.primary,
+        backgroundColor: colors.primary,
     },
     formCard: {
-        marginBottom: Spacing.l,
+        marginBottom: Spacing.m,
     },
     forgotPasswordButton: {
         alignSelf: 'flex-end',
-        marginBottom: Spacing.m,
+        marginBottom: Spacing.xs,
         paddingVertical: Spacing.xs,
     },
     switchContainer: {
@@ -53,6 +55,6 @@ export const styles = StyleSheet.create({
     },
     footer: {
         alignItems: 'center',
-        marginTop: Spacing.xl,
+        marginTop: Spacing.m,
     },
 });

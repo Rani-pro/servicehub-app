@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { Colors, Spacing } from '../../../../shared/theme/theme';
+import { Colors, Spacing, Typography, FontFamily } from '../../../../shared/theme/theme';
+import { getFontSize } from '../../../../shared/utils/responsive';
 
 export const styles = StyleSheet.create({
     container: {
@@ -11,7 +12,7 @@ export const styles = StyleSheet.create({
         borderColor: Colors.border,
     },
     sectionLabel: {
-        fontSize: 13,
+        ...Typography.caption,
         fontWeight: '700',
         color: Colors.primary,
         textTransform: 'uppercase',
@@ -26,12 +27,12 @@ export const styles = StyleSheet.create({
         marginBottom: Spacing.xs,
     },
     codeText: {
-        fontSize: 12,
-        fontFamily: 'monospace',
+        fontSize: getFontSize(12),
+        fontFamily: FontFamily.mono,
         color: '#1e40af',
     },
     outputText: {
-        fontSize: 13,
+        ...Typography.caption,
         color: Colors.textSecondary,
         marginTop: Spacing.xs,
         paddingLeft: Spacing.xs,

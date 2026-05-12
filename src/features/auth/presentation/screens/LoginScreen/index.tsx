@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { styles } from './style';
+import { getStyles } from './style';
 import Input from '../../../../../shared/components/Input';
 import Button from '../../../../../shared/components/Button';
 import Card from '../../../../../shared/components/Card';
@@ -29,6 +29,7 @@ const LoginScreen: React.FC = () => {
     const dispatch = useDispatch();
     const { colors } = useTheme();
     const { isSmallDevice } = useResponsive();
+    const styles = getStyles(colors);
 
     // ─── Auth ────────────────────────────────────────────────────────────────
 
@@ -142,7 +143,7 @@ const LoginScreen: React.FC = () => {
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.container}>
-            <ScrollView 
+            <ScrollView
                 contentContainerStyle={styles.scrollContainer}
                 showsVerticalScrollIndicator={false}
             >
@@ -166,8 +167,8 @@ const LoginScreen: React.FC = () => {
                             !isRegistering && styles.toggleButtonActive
                         ]}
                     >
-                        <ResponsiveText 
-                            variant="button" 
+                        <ResponsiveText
+                            variant="button"
                             color={!isRegistering ? '#fff' : colors.textSecondary}
                         >
                             Login
@@ -180,8 +181,8 @@ const LoginScreen: React.FC = () => {
                             isRegistering && styles.toggleButtonActive
                         ]}
                     >
-                        <ResponsiveText 
-                            variant="button" 
+                        <ResponsiveText
+                            variant="button"
                             color={isRegistering ? '#fff' : colors.textSecondary}
                         >
                             Sign Up
@@ -213,22 +214,25 @@ const LoginScreen: React.FC = () => {
                         size="small"
                     />
 
-                    {!isRegistering && (
+                    <View pointerEvents={isRegistering ? 'none' : 'auto'}>
                         <TouchableOpacity
                             onPress={handleForgotPassword}
-                            style={styles.forgotPasswordButton}
+                            style={[
+                                styles.forgotPasswordButton,
+                                { opacity: isRegistering ? 0 : 1 }
+                            ]}
+                            disabled={isRegistering}
                         >
                             <ResponsiveText variant="bodySmall" color={colors.primary}>
                                 Forgot Password?
                             </ResponsiveText>
                         </TouchableOpacity>
-                    )}
+                    </View>
 
                     <Button
                         title={isRegistering ? 'Create Account' : 'Sign In'}
                         onPress={handleAuth}
                         loading={loading}
-                        fullWidth
                         size="small"
                     />
 

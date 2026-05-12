@@ -8,7 +8,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../../navigation/navigationTypes';
 import { ServicesRepository } from '../../../data/ServicesRepository';
 import { Service } from '../../../data/models/Service';
-import { styles } from './style';
+import { getStyles } from './style';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import { Colors } from '../../../../../shared/theme/theme';
 import { BookingRepository } from '../../../../bookings/data/BookingRepository';
@@ -23,7 +24,8 @@ const ServiceDetailScreen = () => {
     const [service, setService] = useState<Service | null>(null);
     const [loading, setLoading] = useState(true);
     const [booking, setBooking] = useState(false);
-
+    const { colors } = useTheme();
+    const styles = getStyles(colors);
     React.useEffect(() => {
         loadService();
     }, [serviceId]);

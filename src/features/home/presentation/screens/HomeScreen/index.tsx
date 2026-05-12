@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { View, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { DrawerParamList, BottomTabParamList } from '../../../../../navigation/navigationTypes';
+import { DrawerParamList, BottomTabParamList, RootStackParamList } from '../../../../../navigation/navigationTypes';
 import { getStyles } from './style';
 import Card from '../../../../../shared/components/Card';
 import Grid from '../../../../../shared/components/Grid';
@@ -16,17 +17,23 @@ import { useTheme } from '../../../../../shared/hooks/useTheme';
 import { useAppSelector } from '../../../../../shared/hooks/reduxHooks';
 import { useResponsive } from '../../../../../shared/hooks/useResponsive';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 type NavigationProp = CompositeNavigationProp<
     BottomTabNavigationProp<BottomTabParamList>,
-    DrawerNavigationProp<DrawerParamList>
+    CompositeNavigationProp<
+        DrawerNavigationProp<DrawerParamList>,
+        NativeStackNavigationProp<RootStackParamList>
+    >
 >;
 
 const HomeScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
     const { user } = useAppSelector((state) => state.auth);
-    const { isTablet, isSmallDevice } = useResponsive();
+    const { isTablet, isSmallDevice, isLandscape } = useResponsive();
+    const insets = useSafeAreaInsets();
 
     const menuItems = [
         {
@@ -53,21 +60,21 @@ const HomeScreen = () => {
         {
             title: 'Support',
             icon: 'help-circle',
-            onPress: () => console.log('Support Pressed'),
+            onPress: () => navigation.navigate('Support'),
             color: '#F59E0B',
             gradient: ['#F59E0B', '#D97706'],
         },
         {
             title: 'About',
             icon: 'information',
-            onPress: () => console.log('About Pressed'),
+            onPress: () => navigation.navigate('About'),
             color: '#EF4444',
             gradient: ['#EF4444', '#DC2626'],
         },
         {
             title: 'Feedback',
             icon: 'message-text',
-            onPress: () => console.log('Feedback Pressed'),
+            onPress: () => navigation.navigate('Feedback'),
             color: '#06B6D4',
             gradient: ['#06B6D4', '#0891B2'],
         },
@@ -96,14 +103,14 @@ const HomeScreen = () => {
                 activeOpacity={0.8}
             >
                 <View style={[styles.iconContainer, { backgroundColor: item.color + '15' }]}>
-                    <Icon 
-                        name={item.icon} 
-                        size={isSmallDevice ? ComponentSizes.icon.large : ComponentSizes.icon.xlarge} 
-                        color={item.color} 
+                    <Icon
+                        name={item.icon}
+                        size={isSmallDevice ? ComponentSizes.icon.large : ComponentSizes.icon.xlarge}
+                        color={item.color}
                     />
                 </View>
-                <ResponsiveText 
-                    variant={isSmallDevice ? "bodySmall" : "body"} 
+                <ResponsiveText
+                    variant={isSmallDevice ? "bodySmall" : "body"}
                     style={styles.cardTitle}
                     align="center"
                 >
@@ -120,13 +127,13 @@ const HomeScreen = () => {
             onPress={item.onPress}
             activeOpacity={0.8}
         >
-            <Icon 
-                name={item.icon} 
-                size={ComponentSizes.icon.medium} 
-                color="white" 
+            <Icon
+                name={item.icon}
+                size={ComponentSizes.icon.medium}
+                color="white"
             />
-            <ResponsiveText 
-                variant="bodySmall" 
+            <ResponsiveText
+                variant="bodySmall"
                 style={styles.quickActionText}
                 color="white"
             >
@@ -148,8 +155,8 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-            
+            <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+
             {/* Header */}
             <CommonHeader
                 title={getUserDisplayName()}
@@ -158,14 +165,20 @@ const HomeScreen = () => {
                 rightElement="notification"
             />
 
-            <ScrollView 
+            <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={[
+                    styles.scrollContent,
+                    {
+                        paddingHorizontal: Math.max(Spacing.m, insets.left + Spacing.m),
+                        paddingBottom: Math.max(Spacing.s, insets.bottom + Spacing.s),
+                    },
+                ]}
             >
                 {/* Quick Actions */}
                 <View style={styles.quickActionsContainer}>
-                    <ResponsiveText 
-                        variant="h4" 
+                    <ResponsiveText
+                        variant="h4"
                         style={styles.sectionTitle}
                         color={colors.text}
                     >
@@ -200,18 +213,18 @@ const HomeScreen = () => {
                         </View>
                     </Card>
                 </View>
-                
+
                 {/* Main Menu */}
                 <View style={styles.menuSection}>
-                    <ResponsiveText 
-                        variant="h4" 
+                    <ResponsiveText
+                        variant="h4"
                         style={styles.sectionTitle}
                         color={colors.text}
                     >
                         Explore Services
                     </ResponsiveText>
-                    
-                    <Grid spacing={Spacing.m} numColumns={isTablet ? 3 : 2}>
+
+                    <Grid spacing={Spacing.s} numColumns={isTablet ? 3 : 2} containerPadding={Spacing.m}>
                         {menuItems.map(renderMenuItem)}
                     </Grid>
                 </View>

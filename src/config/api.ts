@@ -13,7 +13,9 @@ export const API_CONFIG = {
 export const APP_CONFIG = {
   environment: Environment.ENVIRONMENT,
   enableLogging: Environment.ENVIRONMENT !== 'production',
-  enableCrashlytics: Environment.ENVIRONMENT === 'production',
+  // Enable Crashlytics in all environments for testing
+  // Set to false only if user explicitly opts out
+  enableCrashlytics: true,
 };
 
 console.log(`App running in ${Environment.ENVIRONMENT} environment`);

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { 
   getFontSize, 
   getSpacing, 
@@ -7,12 +8,21 @@ import {
   responsiveVerticalScale 
 } from '../utils/responsive';
 
+// ─── Font Families ─────────────────────────────────────────────────────────
+export const FontFamily = {
+    regular: Platform.select({ ios: 'System', android: 'Roboto', default: 'System' }),
+    medium: Platform.select({ ios: 'System', android: 'Roboto-Medium', default: 'System' }),
+    semiBold: Platform.select({ ios: 'System', android: 'Roboto-Medium', default: 'System' }),
+    bold: Platform.select({ ios: 'System', android: 'Roboto-Bold', default: 'System' }),
+    mono: Platform.select({ ios: 'Courier New', android: 'monospace', default: 'monospace' }),
+};
+
 export type ThemeMode = 'light' | 'dark';
 
 export const LightColors = {
     primary: '#22C55E',
     secondary: '#16A34A',
-    background: '#FFFFFF',
+    background: '#F9FAFB',
     secondaryBackground: '#F3F4F6',
     text: '#111827',
     textSecondary: '#4B5563',
@@ -59,41 +69,49 @@ export const Typography = {
     h1: {
         fontSize: getFontSize(32),
         fontWeight: 'bold' as const,
+        fontFamily: FontFamily.bold,
         lineHeight: getFontSize(40),
     },
     h2: {
         fontSize: getFontSize(28),
         fontWeight: 'bold' as const,
+        fontFamily: FontFamily.bold,
         lineHeight: getFontSize(36),
     },
     h3: {
         fontSize: getFontSize(24),
         fontWeight: '600' as const,
+        fontFamily: FontFamily.semiBold,
         lineHeight: getFontSize(32),
     },
     h4: {
         fontSize: getFontSize(20),
         fontWeight: '600' as const,
+        fontFamily: FontFamily.semiBold,
         lineHeight: getFontSize(28),
     },
     body: {
         fontSize: getFontSize(16),
         fontWeight: '400' as const,
+        fontFamily: FontFamily.regular,
         lineHeight: getFontSize(24),
     },
     bodySmall: {
         fontSize: getFontSize(14),
         fontWeight: '400' as const,
+        fontFamily: FontFamily.regular,
         lineHeight: getFontSize(20),
     },
     caption: {
         fontSize: getFontSize(12),
         fontWeight: '400' as const,
+        fontFamily: FontFamily.regular,
         lineHeight: getFontSize(16),
     },
     button: {
         fontSize: getFontSize(16),
         fontWeight: '600' as const,
+        fontFamily: FontFamily.semiBold,
         lineHeight: getFontSize(20),
     },
 };
@@ -111,8 +129,8 @@ export const ComponentSizes = {
         paddingHorizontal: getSpacing(16),
     },
     card: {
-        borderRadius: responsiveScale(12),
-        padding: getSpacing(16),
+        borderRadius: responsiveScale(10),
+        padding: getSpacing(12),
     },
     icon: {
         small: responsiveScale(16),
