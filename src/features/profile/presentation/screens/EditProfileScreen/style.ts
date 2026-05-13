@@ -67,8 +67,22 @@ export const getStyles = (colors: any, Spacing: any) =>
             marginBottom: Spacing.m,
         },
         saveBtn: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: colors.primary,
+            borderRadius: ComponentSizes.card.borderRadius,
+            padding: Spacing.m,
             marginTop: Spacing.m,
             marginBottom: Spacing.m,
+            ...Shadows.medium,
+        },
+        saveBtnText: {
+            ...Typography.body,
+            color: '#FFFFFF',
+            fontWeight: '700',
+            fontSize: responsiveScale(16),
+            marginRight: responsiveScale(8),
         },
         phoneLabel: {
             color: colors.text,

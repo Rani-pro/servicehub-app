@@ -13,7 +13,7 @@ import BookingConfirmationScreen from '../features/bookings/presentation/screens
 import EditProfileScreen from '../features/profile/presentation/screens/EditProfileScreen';
 import SupportScreen from '../features/support/presentation/screens/SupportScreen';
 import AboutScreen from '../features/about/presentation/screens/AboutScreen';
-import FeedbackScreen from '../features/support/presentation/screens/FeedbackScreen';
+import FeedbackScreen from '../features/feedback/presentation/Feedback';
 // Navigators
 import DrawerNavigator from './DrawerNavigator';
 import { RootState } from '../store/store';

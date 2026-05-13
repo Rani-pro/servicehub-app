@@ -4,10 +4,9 @@ import {
     ScrollView,
     StatusBar,
     TouchableOpacity,
+    ActivityIndicator,
     Alert,
     Modal,
-    FlatList,
-    TextInput,
     Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -19,52 +18,35 @@ import { useResponsive } from '../../../../../shared/hooks/useResponsive';
 import { CommonHeader } from '../../../../../shared/components/CommonHeader';
 import ResponsiveText from '../../../../../shared/components/ResponsiveText';
 import Input from '../../../../../shared/components/Input';
-import Button from '../../../../../shared/components/Button';
+
+import { PhoneNumberInput, Country } from '../../../../../shared/components';
 import { Spacing } from '../../../../../shared/theme/theme';
 import { getStyles } from './style';
 
-const COUNTRY_CODES = [
-    { code: 'IN', name: 'India', dial: '+91', flag: '🇮🇳' },
-    { code: 'US', name: 'United States', dial: '+1', flag: '🇺🇸' },
-    { code: 'GB', name: 'United Kingdom', dial: '+44', flag: '🇬🇧' },
-    { code: 'AU', name: 'Australia', dial: '+61', flag: '🇦🇺' },
-    { code: 'CA', name: 'Canada', dial: '+1', flag: '🇨🇦' },
-    { code: 'AE', name: 'UAE', dial: '+971', flag: '🇦🇪' },
-    { code: 'SA', name: 'Saudi Arabia', dial: '+966', flag: '🇸🇦' },
-    { code: 'PK', name: 'Pakistan', dial: '+92', flag: '🇵🇰' },
-    { code: 'BD', name: 'Bangladesh', dial: '+880', flag: '🇧🇩' },
-    { code: 'DE', name: 'Germany', dial: '+49', flag: '🇩🇪' },
-    { code: 'FR', name: 'France', dial: '+33', flag: '🇫🇷' },
-    { code: 'SG', name: 'Singapore', dial: '+65', flag: '🇸🇬' },
-    { code: 'NZ', name: 'New Zealand', dial: '+64', flag: '🇳🇿' },
-    { code: 'ZA', name: 'South Africa', dial: '+27', flag: '🇿🇦' },
-    { code: 'NG', name: 'Nigeria', dial: '+234', flag: '🇳🇬' },
-    { code: 'JP', name: 'Japan', dial: '+81', flag: '🇯🇵' },
-    { code: 'CN', name: 'China', dial: '+86', flag: '🇨🇳' },
-    { code: 'BR', name: 'Brazil', dial: '+55', flag: '🇧🇷' },
-    { code: 'MX', name: 'Mexico', dial: '+52', flag: '🇲🇽' },
-    { code: 'IT', name: 'Italy', dial: '+39', flag: '🇮🇹' },
-];
-
 const EditProfileScreen = () => {
+
     const navigation = useNavigation();
     const { colors } = useTheme();
     const { user } = useAppSelector((state) => state.auth);
     const { isSmallDevice } = useResponsive();
     const styles = useMemo(() => getStyles(colors, Spacing), [colors]);
 
-    const [displayName, setDisplayName] = useState(
-        user?.displayName || user?.email?.split('@')[0] || ''
-    );
+    const getUserDisplayName = () => {
+        if (user?.displayName) return user.displayName;
+        if (typeof user?.email === 'string' && typeof user.email.split === 'function') {
+            return user.email.split('@')[0];
+        }
+        return '';
+    };
+
+    const [displayName, setDisplayName] = useState(getUserDisplayName());
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [bio, setBio] = useState('');
     const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
     const [photoModalVisible, setPhotoModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState(COUNTRY_CODES[0]);
-    const [countryModalVisible, setCountryModalVisible] = useState(false);
-    const [countrySearch, setCountrySearch] = useState('');
+    const [countryDialCode, setCountryDialCode] = useState('+91');
 
     const handlePickFromGallery = () => {
         setPhotoModalVisible(false);
@@ -174,34 +156,13 @@ const EditProfileScreen = () => {
                         <ResponsiveText variant="bodySmall" style={styles.phoneLabel}>
                             Phone Number
                         </ResponsiveText>
-                        <View style={styles.phoneRow}>
-                            <TouchableOpacity
-                                style={styles.countryCodeBtn}
-                                onPress={() => {
-                                    setCountrySearch('');
-                                    setCountryModalVisible(true);
-                                }}
-                                activeOpacity={0.7}
-                            >
-                                <ResponsiveText variant="body" style={styles.flagText}>
-                                    {selectedCountry.flag}
-                                </ResponsiveText>
-                                <ResponsiveText variant="bodySmall" style={styles.dialText}>
-                                    {selectedCountry.dial}
-                                </ResponsiveText>
-                                <Icon name="chevron-down" size={16} color={colors.textSecondary} />
-                            </TouchableOpacity>
-                            <View style={styles.phoneInputWrapper}>
-                                <TextInput
-                                    style={styles.phoneInput}
-                                    value={phone}
-                                    onChangeText={setPhone}
-                                    placeholder="Enter phone number"
-                                    placeholderTextColor={colors.textSecondary}
-                                    keyboardType="phone-pad"
-                                />
-                            </View>
-                        </View>
+                        <PhoneNumberInput
+                            value={phone}
+                            onChangeText={setPhone}
+                            onCountryChange={(country: Country) => setCountryDialCode(country.dialCode)}
+                            defaultCountryCode="IN"
+                            containerStyle={{ marginTop: Spacing.xs }}
+                        />
                     </View>
                 </View>
 
@@ -230,13 +191,24 @@ const EditProfileScreen = () => {
                     />
                 </View>
 
-                <Button
-                    title="Save Changes"
-                    onPress={handleSave}
-                    loading={loading}
+                <TouchableOpacity
                     style={styles.saveBtn}
-                    fullWidth
-                />
+                    onPress={handleSave}
+                    disabled={loading}
+                    activeOpacity={0.7}
+                >
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                        <>
+                            <Icon name="content-save-outline" size={20} color="#FFFFFF" />
+                            <ResponsiveText variant="body" style={styles.saveBtnText}>
+                                Save Changes
+                            </ResponsiveText>
+
+                        </>
+                    )}
+                </TouchableOpacity>
             </ScrollView>
 
             {/* Photo Picker Modal */}
@@ -276,74 +248,6 @@ const EditProfileScreen = () => {
                 </View>
             </Modal>
 
-            {/* Country Code Picker Modal */}
-            <Modal
-                visible={countryModalVisible}
-                animationType="slide"
-                transparent
-                onRequestClose={() => setCountryModalVisible(false)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalSheet}>
-                        <View style={styles.modalHeader}>
-                            <ResponsiveText variant="h4" style={styles.modalTitle}>
-                                Select Country
-                            </ResponsiveText>
-                            <TouchableOpacity onPress={() => setCountryModalVisible(false)}>
-                                <Icon name="close" size={22} color={colors.text} />
-                            </TouchableOpacity>
-                        </View>
-
-                        {/* Search */}
-                        <View style={styles.searchBox}>
-                            <Icon name="magnify" size={18} color={colors.textSecondary} />
-                            <TextInput
-                                style={styles.searchInput}
-                                value={countrySearch}
-                                onChangeText={setCountrySearch}
-                                placeholder="Search country..."
-                                placeholderTextColor={colors.textSecondary}
-                                autoCapitalize="none"
-                            />
-                        </View>
-
-                        <FlatList
-                            data={COUNTRY_CODES.filter(c =>
-                                c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                c.dial.includes(countrySearch)
-                            )}
-                            keyExtractor={item => item.code}
-                            showsVerticalScrollIndicator={false}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    style={[
-                                        styles.countryItem,
-                                        selectedCountry.code === item.code && styles.countryItemActive,
-                                    ]}
-                                    onPress={() => {
-                                        setSelectedCountry(item);
-                                        setCountryModalVisible(false);
-                                    }}
-                                    activeOpacity={0.7}
-                                >
-                                    <ResponsiveText variant="body" style={styles.itemFlag}>
-                                        {item.flag}
-                                    </ResponsiveText>
-                                    <ResponsiveText variant="body" style={styles.itemName}>
-                                        {item.name}
-                                    </ResponsiveText>
-                                    <ResponsiveText variant="bodySmall" style={styles.itemDial}>
-                                        {item.dial}
-                                    </ResponsiveText>
-                                    {selectedCountry.code === item.code && (
-                                        <Icon name="check" size={18} color={colors.primary} />
-                                    )}
-                                </TouchableOpacity>
-                            )}
-                        />
-                    </View>
-                </View>
-            </Modal>
         </View>
     );
 };

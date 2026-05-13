@@ -59,11 +59,13 @@ const ProfileScreen = () => {
     ];
 
     const getUserDisplayName = () => {
-        return user?.displayName || user?.email?.split('@')[0] || 'User';
+        if (user?.displayName) return user.displayName;
+        if (typeof user?.email === 'string') return user.email.split('@')[0];
+        return 'User';
     };
 
     const getUserEmail = () => {
-        return user?.email || 'No email provided';
+        return typeof user?.email === 'string' ? user.email : 'No email provided';
     };
 
     const renderMenuItem = (item: typeof menuItems[0], index: number) => (

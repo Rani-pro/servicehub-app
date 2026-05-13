@@ -3,28 +3,27 @@ import {
     View,
     FlatList,
     TouchableOpacity,
-    StyleSheet,
     Alert,
     Modal,
     ScrollView,
     TouchableWithoutFeedback,
     Keyboard,
 } from 'react-native';
-import { useAppDispatch, useAppSelector } from '../../../../shared/hooks/reduxHooks';
-import { useTheme } from '../../../../shared/hooks/useTheme';
-import { CommonHeader } from '../../../../shared/components/CommonHeader';
-import Button from '../../../../shared/components/Button';
-import Input from '../../../../shared/components/Input';
-import Card from '../../../../shared/components/Card';
-import ResponsiveText from '../../../../shared/components/ResponsiveText';
-import { Spacing, Shadows, ComponentSizes } from '../../../../shared/theme/theme';
+import { useAppDispatch, useAppSelector } from '../../../../../shared/hooks/reduxHooks';
+import { useTheme } from '../../../../../shared/hooks/useTheme';
+import { CommonHeader } from '../../../../../shared/components/CommonHeader';
+import Button from '../../../../../shared/components/Button';
+import Input from '../../../../../shared/components/Input';
+import Card from '../../../../../shared/components/Card';
+import ResponsiveText from '../../../../../shared/components/ResponsiveText';
 import {
     fetchNotes,
     createNote,
     updateNote,
     deleteNote,
-} from '../../store/notesSlice';
-import { Note } from '../../data/models/Note';
+} from '../../../store/notesSlice';
+import { Note } from '../../../data/models/Note';
+import { styles } from './style';
 
 const NotesScreen: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -206,59 +205,3 @@ const NotesScreen: React.FC = () => {
 };
 
 export default NotesScreen;
-
-const styles = StyleSheet.create({
-    container: { flex: 1 },
-    listContent: {
-        padding: Spacing.m,
-        paddingBottom: Spacing.xxl + ComponentSizes.button.height,
-    },
-    emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
-    emptyText: { textAlign: 'center' },
-    errorBanner: {
-        margin: Spacing.m,
-        padding: Spacing.s,
-        borderRadius: ComponentSizes.card.borderRadius,
-    },
-    card: { marginBottom: Spacing.m },
-    cardBody: { width: '100%' },
-    cardTop: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: Spacing.xs,
-    },
-    cardTitle: { flex: 1, marginRight: Spacing.s },
-    cardContent: { marginBottom: Spacing.xs },
-    fabContainer: {
-        position: 'absolute',
-        bottom: Spacing.l,
-        left: Spacing.l,
-        right: Spacing.l,
-        ...Shadows.medium,
-    },
-    // Overlay — tapping here dismisses keyboard
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'flex-end',
-    },
-    // Sheet — fixed height, does NOT resize when keyboard opens
-    modalBox: {
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        maxHeight: '85%',
-    },
-    modalScroll: {
-        padding: Spacing.l,
-        paddingBottom: Spacing.xxl,
-    },
-    modalTitle: { marginBottom: Spacing.m },
-    contentInput: { marginTop: Spacing.xs },
-    modalActions: {
-        flexDirection: 'row',
-        gap: Spacing.m,
-        marginTop: Spacing.m,
-    },
-    modalBtn: { flex: 1 },
-});

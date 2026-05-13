@@ -65,7 +65,8 @@ export const getStyles = (colors: any) => StyleSheet.create({
     },
     bookButton: {
         backgroundColor: colors.primary,
-        padding: Spacing.m,
+        paddingVertical: Spacing.s,
+        paddingHorizontal: Spacing.m,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',

@@ -22,7 +22,7 @@ import NotesScreen from '../features/notes/presentation/screens/NotesScreen';
 import ServicesListScreen from '../features/services/presentation/screens/ServicesListScreen';
 import SupportScreen from '../features/support/presentation/screens/SupportScreen';
 import AboutScreen from '../features/about/presentation/screens/AboutScreen';
-import FeedbackScreen from '../features/support/presentation/screens/FeedbackScreen';
+import FeedbackScreen from '../features/feedback/presentation/Feedback';
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
